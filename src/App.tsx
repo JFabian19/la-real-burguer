@@ -7,14 +7,14 @@ import { DEFAULT_MENU_DATA } from './data/menuData';
 // ==========================================
 // 📋 CONFIGURACIÓN DE LA PLANTILLA DEL MENÚ
 // ==========================================
-const RESTAURANTE_NAME = "Mi Restaurante";
-const RESTAURANTE_SLOGAN = "Slogan o especialidad de tu negocio";
-const WHATSAPP_NUMBER = "51900000000"; // Reemplaza con tu número de WhatsApp con código de país (ej: 51 para Perú)
-const FACEBOOK_URL = "https://facebook.com/tu-pagina";
-const MAPS_URL = "https://www.google.com/maps/search/?api=1&query=Tu+Ubicacion+Aqui";
+const RESTAURANTE_NAME = "La Real Burger";
+const RESTAURANTE_SLOGAN = "Sabor real, momentos inolvidables";
+const WHATSAPP_NUMBER = "51914795450";
+const FACEBOOK_URL = "";
+const MAPS_URL = "https://www.google.com/maps/search/?api=1&query=San+Francisco+Mz.5+Lt.10+Calle+Los+Alamos";
 const LOGO_FOOTER_PATH = ""; // Reemplaza con la ruta de tu logo en public/ (ej: /logo.png)
 const BANNER_PATH = ""; // Reemplaza con la ruta de tu banner en public/ (ej: /banner.png)
-const MARQUEE_TEXT = "✨ ¡BIENVENIDOS A NUESTRO MENÚ DIGITAL! • REALIZA TU PEDIDO POR WHATSAPP DE FORMA FÁCIL Y RÁPIDA • ";
+const MARQUEE_TEXT = "✨ SABOR REAL, MOMENTOS INOLVIDABLES • REALIZA TU PEDIDO POR WHATSAPP DE FORMA FÁCIL Y RÁPIDA • ";
 // ==========================================
 
 // Mapa de imágenes locales por defecto para platos conocidos (vacío por defecto para la plantilla)
