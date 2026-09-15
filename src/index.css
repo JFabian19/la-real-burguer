@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Chewy&family=Fredoka:wght@300;400;500;600;700&family=Quicksand:wght@300;400;500;600;700&family=Nunito:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  /* CAMBIA AQUÍ LAS TIPOGRAFÍAS DEL MENÚ (Usa Google Fonts) */
+  --font-sans: "Nunito", "Inter", system-ui, -apple-system, sans-serif;
+  --font-title: "Chewy", sans-serif;   /* Tipografía para Títulos (ej. Chewy, Playfair, etc.) */
+  --font-category: "Fredoka", sans-serif; /* Tipografía para Categorías */
+  --font-dish: "Quicksand", sans-serif;     /* Tipografía para Platos y Precios */
+  --font-slogan: "Quicksand", sans-serif;  /* Tipografía para Eslogans/Marquee (ej. Quicksand) */
+  
+  /* CAMBIA AQUÍ LOS COLORES DEL MENÚ (Usa formato HEX) */
+  --color-primary: #E91E63;      /* Color principal de la marca (Fucsia/Magenta) */
+  --color-secondary: #8BC34A;    /* Color de acento/secundario (Verde Kiwi) */
+  --color-dark: #4A148C;         /* Color de texto oscuro principal (Morado Oscuro) */
+  --color-light: #FDF2F8;        /* Color de fondo del body (Rosa Pálido) */
+  
+  --shadow-glass: 0 8px 32px 0 rgba(233, 30, 99, 0.08);
+  --glass-bg: rgba(255, 255, 255, 0.95);
+  --glass-border: rgba(255, 255, 255, 0.4);
+}
+
+body {
+  background-color: #090909;
+  color: #fff;
+  -webkit-font-smoothing: antialiased;
+  font-family: var(--font-sans);
+}
+
+.menu-shell {
+  background-image:
+    radial-gradient(circle at 15% 0%, rgba(245, 158, 11, 0.09), transparent 25%),
+    radial-gradient(circle at 100% 35%, rgba(223, 61, 33, 0.08), transparent 22%);
+}
+
+.menu-hero-placeholder,
+.dish-image-placeholder {
+  background-image:
+    linear-gradient(135deg, transparent 0 46%, rgba(245, 158, 11, 0.1) 46% 48%, transparent 48% 100%),
+    linear-gradient(45deg, transparent 0 46%, rgba(245, 158, 11, 0.08) 46% 48%, transparent 48% 100%);
+  background-size: 24px 24px;
+}
+
+.menu-dish-row::before {
+  content: '';
+  position: absolute;
+  width: 5px;
+  height: 58%;
+  top: 21%;
+  left: 0;
+  background: #df3d21;
+  border-radius: 0 4px 4px 0;
+}
+
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-glass);
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+  display: flex;
+  width: max-content;
+}
+
+/* Custom scrollbar hide */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Wave decoration for sections */
+@keyframes wave {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(2deg); }
+}
+
+.wave-icon {
+  animation: wave 3s ease-in-out infinite;
+  display: inline-block;
+}
+
+/* Category header underline animation */
+.category-underline {
+  position: relative;
+}
+
+.category-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #f59e0b, #df3d21);
+  border-radius: 2px;
+}
