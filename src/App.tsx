@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-  Bike, CheckCircle2, ChevronRight, Clock3, Gift, Loader2, MapPin, Minus,
-  Navigation, Phone, Plus, ShoppingBag, Sparkles, Star, Store, Trash2,
+  Bike, CheckCircle2, ChevronRight, Gift, Loader2, MapPin, Minus,
+  Navigation, Phone, Plus, ShoppingBag, Star, Store, Trash2,
   UserRound, Utensils, X,
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
@@ -10,7 +10,7 @@ import { fetchSheetData, SheetCategory, SheetDish, SHEET_ID, submitSheetData } f
 
 const RESTAURANTE_NAME = 'La Real Burger';
 const RESTAURANTE_SLOGAN = 'Sabor real, momentos inolvidables';
-const WHATSAPP_NUMBER = '51914795450';
+const WHATSAPP_NUMBER = '51942055475';
 const MAPS_URL = 'https://www.google.com/maps/search/?api=1&query=San+Francisco+Mz.5+Lt.10+Calle+Los+Alamos';
 const LOGO_PATH = '/assets/la-real-logo.png';
 const BANNER_PATH = '/assets/la-real-banner.png';
@@ -49,7 +49,7 @@ export default function App() {
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
   const [locationLoading, setLocationLoading] = useState(false);
   const [locationError, setLocationError] = useState('');
-  const [showBirthdayForm, setShowBirthdayForm] = useState(false);
+  const [showBirthdayForm, setShowBirthdayForm] = useState(true);
   const [isSubmittingBirthday, setIsSubmittingBirthday] = useState(false);
   const [birthdaySuccess, setBirthdaySuccess] = useState(false);
   const [birthdayData, setBirthdayData] = useState({ nombre: '', telefono: '', fechaNacimiento: '', distrito: '', correo: '' });
@@ -245,11 +245,7 @@ export default function App() {
 
       <div className="relative z-10 px-4 pb-3 pt-4">
         <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} className="hero-card relative aspect-[1.78/1] overflow-hidden rounded-[1.75rem] border border-[#ff9d16]/35 shadow-[0_24px_55px_rgba(0,0,0,.5)]">
-          <img src={BANNER_PATH} alt="Hamburguesa de La Real Burger" className="h-full w-full object-cover" /><div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/10" />
-          <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4">
-            <div><span className="mb-1 inline-flex items-center gap-1 rounded-full bg-[#ff9d16] px-2 py-1 text-[8px] font-black uppercase tracking-[0.16em] text-black"><Sparkles size={10} /> Sabor que manda</span><h2 className="font-title text-[27px] leading-none text-white">Antojo real,<br />sabor inolvidable</h2></div>
-            <span className="flex shrink-0 items-center gap-1 rounded-xl border border-white/15 bg-black/45 px-2.5 py-2 text-[9px] font-bold text-white/80 backdrop-blur-md"><Clock3 size={13} className="text-[#ff9d16]" /> Hecho al momento</span>
-          </div>
+          <img src={BANNER_PATH} alt="Hamburguesa de La Real Burger" className="h-full w-full object-cover" />
         </motion.div>
       </div>
 
