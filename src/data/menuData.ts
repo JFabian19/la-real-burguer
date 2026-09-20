@@ -7,11 +7,6 @@ const category = (id: string, nombre: string, rows: MenuRow[]): Category => ({
 });
 
 export const DEFAULT_MENU_DATA: Category[] = [
-  category('waffles', 'Waffles', [
-    ['Waffle clásico', 'S/. 13.00', 'Elige 2 frutas y 1 topping. Frutas: fresa, arándanos, mango, plátano, durazno o papaya.'],
-    ['Fruti Waffle', 'S/. 23.90', 'Base de yogurt griego o vainilla. Elige 1 sabor, 3 frutas y 2 toppings.'],
-    ['Bola de helado adicional', 'S/. 3.00'],
-  ]),
   category('sandwich', 'Sánguches', [
     ['Mixto pavita', 'S/. 12.00', 'Pan molde con queso mozzarella y jamón pavita.'],
     ['Ciabatta con jamón', 'S/. 12.00', 'Con crema de queso, jamón americano, tomate y lechuga orgánica.'],
