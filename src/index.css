@@ -107,6 +107,42 @@ button:disabled { cursor: not-allowed; }
 
 .gift-float { animation: giftFloat 2.4s ease-in-out infinite; }
 
+.birthday-promo-modal {
+  background: #100c08;
+}
+
+.promo-register-button {
+  display: flex;
+  min-height: 62px;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border: 2px solid #ffd168;
+  border-radius: 18px;
+  background: linear-gradient(105deg, #f15a16 0%, #ff9717 48%, #ffc32a 100%);
+  color: #170d05;
+  font-size: 17px;
+  font-weight: 1000;
+  letter-spacing: .035em;
+  box-shadow: 0 10px 32px rgba(255, 142, 18, .38), inset 0 1px 0 rgba(255, 255, 255, .42);
+  animation: promoPulse 1.8s ease-in-out infinite;
+}
+
+.promo-register-button span { line-height: 1.05; }
+.promo-register-button small {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+
+.promo-countdown {
+  transform-origin: left;
+  animation: promoCountdown 10s linear forwards;
+}
+
 .hero-card::before {
   content: '';
   position: absolute;
@@ -307,6 +343,8 @@ button:disabled { cursor: not-allowed; }
 @keyframes wave { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-3px) rotate(4deg); } }
 @keyframes giftFloat { 0%, 100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-4px) rotate(4deg); } }
 @keyframes shine { 0%, 58% { transform: translateX(-120%); } 78%, 100% { transform: translateX(120%); } }
+@keyframes promoPulse { 0%, 100% { transform: scale(1); filter: brightness(1); } 50% { transform: scale(1.018); filter: brightness(1.08); } }
+@keyframes promoCountdown { from { transform: scaleX(1); } to { transform: scaleX(0); } }
 @keyframes floatOrb { 0%, 100% { transform: translate3d(0, 0, 0) scale(1); } 50% { transform: translate3d(12px, -18px, 0) scale(1.05); } }
 @keyframes emberRise { 0%, 100% { transform: translateY(18px) scale(.7); opacity: .1; } 50% { transform: translateY(-24px) scale(1); opacity: .5; } }
 

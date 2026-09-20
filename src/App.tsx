@@ -14,6 +14,7 @@ const WHATSAPP_NUMBER = '51942055475';
 const MAPS_URL = 'https://www.google.com/maps/search/?api=1&query=San+Francisco+Mz.5+Lt.10+Calle+Los+Alamos';
 const LOGO_PATH = '/assets/la-real-logo.png';
 const BANNER_PATH = '/assets/la-real-banner.png';
+const BIRTHDAY_PROMO_PATH = '/assets/birthday-promo.png';
 const MARQUEE_TEXT = '🔥 HAMBURGUESAS CON SABOR REAL • PEDIDOS RÁPIDOS POR WHATSAPP • RECOJO EN TIENDA O DELIVERY • ';
 const LOCAL_IMAGES: Record<string, string> = {};
 
@@ -49,9 +50,9 @@ export default function App() {
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
   const [locationLoading, setLocationLoading] = useState(false);
   const [locationError, setLocationError] = useState('');
-  const [showBirthdayForm, setShowBirthdayForm] = useState(true);
+  const [showBirthdayPromo, setShowBirthdayPromo] = useState(true);
+  const [showBirthdayForm, setShowBirthdayForm] = useState(false);
   const [isSubmittingBirthday, setIsSubmittingBirthday] = useState(false);
-  const [birthdaySuccess, setBirthdaySuccess] = useState(false);
   const [birthdayData, setBirthdayData] = useState({ nombre: '', telefono: '', fechaNacimiento: '', distrito: '', correo: '' });
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
@@ -99,6 +100,12 @@ export default function App() {
     };
     loadData();
   }, []);
+
+  useEffect(() => {
+    if (!showBirthdayPromo || loading) return;
+    const timer = window.setTimeout(() => setShowBirthdayPromo(false), 10000);
+    return () => window.clearTimeout(timer);
+  }, [showBirthdayPromo, loading]);
 
   const cartCount = useMemo(() => cart.reduce((total, item) => total + item.cantidad, 0), [cart]);
   const calculateTotal = () => cart.reduce((total, item) => {
@@ -173,11 +180,8 @@ export default function App() {
     });
     setIsSubmittingBirthday(false);
     if (success) {
-      setBirthdaySuccess(true);
-      window.setTimeout(() => {
-        setShowBirthdayForm(false); setBirthdaySuccess(false);
-        setBirthdayData({ nombre: '', telefono: '', fechaNacimiento: '', distrito: '', correo: '' });
-      }, 2500);
+      setShowBirthdayForm(false);
+      setBirthdayData({ nombre: '', telefono: '', fechaNacimiento: '', distrito: '', correo: '' });
     } else window.alert('Hubo un error al enviar tus datos. Por favor, inténtalo de nuevo.');
   };
 
@@ -312,9 +316,27 @@ export default function App() {
 
       <AnimatePresence>{selectedImage && <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm" onClick={() => setSelectedImage(null)}><button type="button" className="absolute right-5 top-5 flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white" onClick={() => setSelectedImage(null)}><X /></button><motion.img initial={{ scale: 0.85 }} animate={{ scale: 1 }} exit={{ scale: 0.85 }} src={selectedImage} alt="Plato ampliado" className="max-h-[85vh] max-w-full rounded-2xl object-contain" onClick={event => event.stopPropagation()} /></motion.div>}</AnimatePresence>
 
+      <AnimatePresence>{showBirthdayPromo && (
+        <div className="modal-backdrop fixed inset-0 z-[90] flex items-center justify-center p-3">
+          <motion.div initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.94, opacity: 0 }} className="birthday-promo-modal relative flex max-h-[96vh] w-full max-w-sm flex-col overflow-hidden rounded-[1.75rem] border border-[#ff9d16]/45 shadow-[0_28px_90px_rgba(0,0,0,.75)]">
+            <button type="button" onClick={() => setShowBirthdayPromo(false)} className="absolute right-3 top-3 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white backdrop-blur-md" aria-label="Cerrar promoción"><X size={20} /></button>
+            <img src={BIRTHDAY_PROMO_PATH} alt="Promoción de cumpleaños: frappé o mojito de regalo" className="min-h-0 w-full flex-1 object-contain" />
+            <div className="relative border-t border-[#ff9d16]/30 bg-[#100c08] p-3">
+              <button type="button" onClick={() => { setShowBirthdayPromo(false); setShowBirthdayForm(true); }} className="promo-register-button w-full">
+                <Gift size={21} />
+                <span><small>Quiero mi regalo</small>REGÍSTRATE ACÁ</span>
+                <ChevronRight size={22} />
+              </button>
+              <p className="mt-2 text-center text-[9px] font-bold uppercase tracking-[0.12em] text-white/45">Esta promoción se cerrará automáticamente en 10 segundos</p>
+              <span className="promo-countdown absolute inset-x-0 bottom-0 h-1 bg-[#ff9d16]" />
+            </div>
+          </motion.div>
+        </div>
+      )}</AnimatePresence>
+
       <AnimatePresence>{showBirthdayForm && (
         <div className="modal-backdrop fixed inset-0 z-[80] flex items-center justify-center p-4"><motion.div initial={{ scale: 0.92, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.92, opacity: 0 }} className="modal-panel max-h-[92vh] w-full max-w-sm overflow-y-auto rounded-[2rem] border border-white/10 p-6"><button type="button" onClick={() => setShowBirthdayForm(false)} className="modal-close absolute right-5 top-5"><X size={18} /></button><div className="mb-5 pr-8"><span className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#ff9d16]/15 text-[#ff9d16]"><Gift size={24} /></span><p className="text-[9px] font-black uppercase tracking-[0.2em] text-[#ff9d16]">Un detalle de la casa</p><h2 className="font-title text-[28px] text-white">¡Feliz cumpleaños! 🎁</h2><p className="mt-1 text-[11px] leading-relaxed text-white/55">Regístrate y celebra con un frappé o mojito de cortesía. Queremos que tu día tenga un sabor muy especial.</p></div>
-          {birthdaySuccess ? <div className="rounded-2xl border border-emerald-400/20 bg-emerald-400/10 p-4 text-center text-sm font-bold text-emerald-300">¡Listo! Guardamos tus datos. Te esperamos para celebrar.</div> : <form onSubmit={handleBirthdaySubmit} className="space-y-3"><div><label className={fieldLabelClass}>Nombre completo</label><input required value={birthdayData.nombre} onChange={event => setBirthdayData({ ...birthdayData, nombre: event.target.value })} className={fieldClass} placeholder="Ej. Juan Pérez" /></div><div><label className={fieldLabelClass}>Teléfono</label><input required type="tel" inputMode="numeric" minLength={9} maxLength={11} pattern="[0-9]*" value={birthdayData.telefono} onChange={event => setBirthdayData({ ...birthdayData, telefono: event.target.value.replace(/\D/g, '') })} className={fieldClass} placeholder="987654321" /></div><div><label className={fieldLabelClass}>Fecha de nacimiento</label><input required type="date" value={birthdayData.fechaNacimiento} onChange={event => setBirthdayData({ ...birthdayData, fechaNacimiento: event.target.value })} className={`${fieldClass} [color-scheme:dark]`} /></div><div><label className={fieldLabelClass}>Distrito</label><input required value={birthdayData.distrito} onChange={event => setBirthdayData({ ...birthdayData, distrito: event.target.value })} className={fieldClass} placeholder="Ej. San Martín de Porres" /></div><div><label className={fieldLabelClass}>Correo electrónico (opcional)</label><input type="email" value={birthdayData.correo} onChange={event => setBirthdayData({ ...birthdayData, correo: event.target.value })} className={fieldClass} placeholder="correo@ejemplo.com" /></div><button disabled={isSubmittingBirthday} type="submit" className="brand-button mt-2 w-full py-3.5 disabled:opacity-60">{isSubmittingBirthday ? <Loader2 size={18} className="animate-spin" /> : <><Gift size={18} /> Reservar mi regalo</>}</button></form>}
+          <form onSubmit={handleBirthdaySubmit} className="space-y-3"><div><label className={fieldLabelClass}>Nombre completo</label><input required value={birthdayData.nombre} onChange={event => setBirthdayData({ ...birthdayData, nombre: event.target.value })} className={fieldClass} placeholder="Ej. Juan Pérez" /></div><div><label className={fieldLabelClass}>Teléfono</label><input required type="tel" inputMode="numeric" minLength={9} maxLength={11} pattern="[0-9]*" value={birthdayData.telefono} onChange={event => setBirthdayData({ ...birthdayData, telefono: event.target.value.replace(/\D/g, '') })} className={fieldClass} placeholder="987654321" /></div><div><label className={fieldLabelClass}>Fecha de nacimiento</label><input required type="date" value={birthdayData.fechaNacimiento} onChange={event => setBirthdayData({ ...birthdayData, fechaNacimiento: event.target.value })} className={`${fieldClass} [color-scheme:dark]`} /></div><div><label className={fieldLabelClass}>Distrito</label><input required value={birthdayData.distrito} onChange={event => setBirthdayData({ ...birthdayData, distrito: event.target.value })} className={fieldClass} placeholder="Ej. San Martín de Porres" /></div><div><label className={fieldLabelClass}>Correo electrónico (opcional)</label><input type="email" value={birthdayData.correo} onChange={event => setBirthdayData({ ...birthdayData, correo: event.target.value })} className={fieldClass} placeholder="correo@ejemplo.com" /></div><button disabled={isSubmittingBirthday} type="submit" className="brand-button mt-2 w-full py-3.5 disabled:opacity-60">{isSubmittingBirthday ? <Loader2 size={18} className="animate-spin" /> : <><Gift size={18} /> Registrar mi cumpleaños</>}</button></form>
         </motion.div></div>
       )}</AnimatePresence>
 
