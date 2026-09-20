@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-  Bike, CheckCircle2, ChevronRight, Gift, Loader2, MapPin, Minus,
+  Bike, CheckCircle2, ChevronRight, Clock3, Facebook, Gift, Instagram, Loader2, MapPin, Minus,
   Navigation, Phone, Plus, ShoppingBag, Star, Store, Trash2,
   UserRound, Utensils, X,
 } from 'lucide-react';
@@ -11,7 +11,11 @@ import { fetchSheetData, SheetCategory, SheetDish, SHEET_ID, submitSheetData } f
 const RESTAURANTE_NAME = 'La Real Burger';
 const RESTAURANTE_SLOGAN = 'Sabor real, momentos inolvidables';
 const WHATSAPP_NUMBER = '51942055475';
-const MAPS_URL = 'https://www.google.com/maps/search/?api=1&query=San+Francisco+Mz.5+Lt.10+Calle+Los+Alamos';
+const STORE_ADDRESS = 'Asoc. San Francisco, calle Los Álamos, Mz. 05, Lt. 10, 02002 Coronel Gregorio Albarracín Lanchipa, Perú';
+const STORE_HOURS = 'Lunes a sábado · 9:00 a. m. – 6:00 p. m.';
+const MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(STORE_ADDRESS)}`;
+const INSTAGRAM_URL = 'https://www.instagram.com/larealburguer.pe/';
+const FACEBOOK_URL = 'https://www.facebook.com/p/La-Real-burguer-sangucheria-100066460213380/';
 const LOGO_PATH = '/assets/la-real-logo.png';
 const BANNER_PATH = '/assets/la-real-banner.png';
 const BIRTHDAY_PROMO_PATH = '/assets/birthday-promo.png';
@@ -166,7 +170,7 @@ export default function App() {
         message += `🗺️ Ubicación actual: https://www.google.com/maps?q=${userLocation.latitude},${userLocation.longitude}\n🎯 Precisión aproximada: ${Math.round(userLocation.accuracy)} m\n`;
       } else message += '🗺️ Ubicación actual: No compartida\n';
     } else {
-      message += `🏪 *Modalidad: Recojo en tienda*\n👤 Nombre del cliente: ${orderData.nombre.trim()}\n📱 Teléfono: ${orderData.telefono.trim()}\n🙋 Recoge el pedido: ${orderData.nombreRecojo.trim()}\n`;
+      message += `🏪 *Modalidad: Recojo en tienda*\n👤 Nombre del cliente: ${orderData.nombre.trim()}\n📱 Teléfono: ${orderData.telefono.trim()}\n🙋 Recoge el pedido: ${orderData.nombreRecojo.trim()}\n📍 Dirección: ${STORE_ADDRESS}\n🕘 Horario: ${STORE_HOURS}\n🗺️ Mapa: ${MAPS_URL}\n`;
     }
     message += '\n✅ Quedo atento(a) a la confirmación. ¡Gracias!';
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
@@ -275,7 +279,28 @@ export default function App() {
         ))}
 
         <section className="experience-card mb-6 mt-8 rounded-[1.75rem] border border-[#ff9d16]/25 p-6 text-center"><Star size={24} className="mx-auto mb-2 fill-[#ff9d16] text-[#ff9d16]" /><h3 className="font-title text-2xl text-[#ffac29]">¿Cómo estuvo tu experiencia?</h3><p className="mx-auto mb-4 mt-1 max-w-[270px] text-[11px] leading-relaxed text-white/55">Tu opinión nos ayuda a servirte cada vez mejor y a seguir creando momentos con sabor real.</p><motion.button type="button" whileTap={{ scale: 0.96 }} onClick={() => setShowReviewForm(true)} className="brand-button w-full"><Star size={17} /> Calificar mi experiencia</motion.button></section>
-        <footer className="flex flex-col items-center border-t border-[#ff9d16]/15 pb-8 pt-9 text-center"><img src={LOGO_PATH} alt="La Real Burger" className="mb-4 h-28 w-28 rounded-full border border-[#ff9d16]/35 object-cover shadow-[0_0_35px_rgba(255,157,22,.14)]" /><p className="font-title text-2xl text-[#ff9d16]">{RESTAURANTE_NAME}</p><p className="mt-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white/35">© 2026 · Sabor real en cada pedido</p><a href="https://tymasolutions.lat/" target="_blank" rel="noopener noreferrer" className="mt-5 text-[11px] font-bold text-white/35 transition hover:text-white/70">Hecho por <span className="text-[#31b9ff]">Tyma Solutions</span></a></footer>
+        <footer className="flex flex-col items-center border-t border-[#ff9d16]/15 pb-8 pt-9 text-center">
+          <img src={LOGO_PATH} alt="La Real Burger" className="mb-4 h-28 w-28 rounded-full border border-[#ff9d16]/35 object-cover shadow-[0_0_35px_rgba(255,157,22,.14)]" />
+          <p className="font-title text-2xl text-[#ff9d16]">{RESTAURANTE_NAME}</p>
+          <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white/35">Sabor real en cada pedido</p>
+          <div className="mt-5 w-full space-y-2 text-left">
+            <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" className="footer-info-card">
+              <MapPin size={19} className="shrink-0 text-[#ff9d16]" />
+              <span className="min-w-0 flex-1"><small>Encuéntranos en</small>{STORE_ADDRESS}</span>
+              <ChevronRight size={17} className="shrink-0 text-white/35" />
+            </a>
+            <div className="footer-info-card">
+              <Clock3 size={19} className="shrink-0 text-[#ff9d16]" />
+              <span><small>Horario de atención</small>{STORE_HOURS}</span>
+            </div>
+          </div>
+          <div className="mt-3 grid w-full grid-cols-2 gap-2">
+            <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="social-button social-instagram"><Instagram size={18} /> Instagram</a>
+            <a href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer" className="social-button social-facebook"><Facebook size={18} /> Facebook</a>
+          </div>
+          <p className="mt-6 text-[10px] font-bold uppercase tracking-[0.16em] text-white/35">© 2026 · La Real Burger</p>
+          <a href="https://tymasolutions.lat/" target="_blank" rel="noopener noreferrer" className="mt-4 text-[11px] font-bold text-white/35 transition hover:text-white/70">Hecho por <span className="text-[#31b9ff]">Tyma Solutions</span></a>
+        </footer>
       </main>
 
       <AnimatePresence>{cartCount > 0 && !showSummary && !showCheckout && (
@@ -307,7 +332,7 @@ export default function App() {
                 <div><label className={fieldLabelClass} htmlFor="order-address">Dirección de entrega</label><input id="order-address" required value={orderData.direccion} onChange={event => setOrderData({ ...orderData, direccion: event.target.value })} className={fieldClass} placeholder="Calle, número, urbanización y distrito" autoComplete="street-address" /></div>
                 <div><label className={fieldLabelClass} htmlFor="order-reference">Referencia de la dirección</label><textarea id="order-reference" required rows={2} value={orderData.referencia} onChange={event => setOrderData({ ...orderData, referencia: event.target.value })} className={`${fieldClass} resize-none`} placeholder="Ej. Frente al parque, portón negro" /></div>
                 <div className="rounded-2xl border border-[#ff9d16]/20 bg-[#ff9d16]/[0.06] p-3"><button type="button" onClick={requestLocation} disabled={locationLoading} className={`location-button ${userLocation ? 'location-ready' : ''}`}>{locationLoading ? <Loader2 size={19} className="animate-spin" /> : userLocation ? <CheckCircle2 size={19} /> : <Navigation size={19} />}<span>{locationLoading ? 'Obteniendo ubicación...' : userLocation ? 'Ubicación lista para compartir' : 'Compartir mi ubicación actual'}</span></button><p className="mt-2 flex gap-2 text-[9px] leading-relaxed text-orange-100/55"><MapPin size={13} className="mt-0.5 shrink-0 text-[#ff9d16]" />Al pulsar, permite el acceso y activa “ubicación precisa”. Se añadirá un enlace de Google Maps al mensaje de WhatsApp para ubicarte correctamente.</p>{userLocation && <p className="mt-2 text-[9px] font-bold text-emerald-400">Ubicación capturada · precisión aproximada de {Math.round(userLocation.accuracy)} m</p>}{locationError && <p className="mt-2 text-[9px] font-bold text-red-300">{locationError}</p>}</div>
-              </> : <div><label className={fieldLabelClass} htmlFor="pickup-name">Nombre de quien recogerá</label><input id="pickup-name" required value={orderData.nombreRecojo} onChange={event => setOrderData({ ...orderData, nombreRecojo: event.target.value })} className={fieldClass} placeholder="Ej. María Pérez" /><a href={MAPS_URL} target="_blank" rel="noopener noreferrer" className="mt-3 flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-[10px] font-bold text-white/65 transition hover:border-[#ff9d16]/40 hover:text-[#ffb33a]"><MapPin size={17} className="text-[#ff9d16]" /> Ver ubicación de la tienda</a></div>}
+              </> : <div><label className={fieldLabelClass} htmlFor="pickup-name">Nombre de quien recogerá</label><input id="pickup-name" required value={orderData.nombreRecojo} onChange={event => setOrderData({ ...orderData, nombreRecojo: event.target.value })} className={fieldClass} placeholder="Ej. María Pérez" /><div className="pickup-store-card"><div className="flex items-start gap-3"><MapPin size={18} className="mt-0.5 shrink-0 text-[#ff9d16]" /><div><p className="text-[9px] font-black uppercase tracking-[0.16em] text-[#ff9d16]">Dirección de recojo</p><p className="mt-1 text-[10px] font-semibold leading-relaxed text-white/75">{STORE_ADDRESS}</p></div></div><div className="mt-3 flex items-center gap-3 border-t border-white/[0.08] pt-3"><Clock3 size={18} className="shrink-0 text-[#ff9d16]" /><div><p className="text-[9px] font-black uppercase tracking-[0.16em] text-[#ff9d16]">Horario</p><p className="mt-0.5 text-[10px] font-semibold text-white/75">{STORE_HOURS}</p></div></div><a href={MAPS_URL} target="_blank" rel="noopener noreferrer" className="pickup-map-button"><span>Abrir ubicación en Google Maps</span><ChevronRight size={16} /></a></div></div>}
               <button type="submit" className="whatsapp-button mt-2 w-full"><span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20"><ChevronRight size={19} /></span><span className="text-left"><small className="block text-[8px] font-black uppercase tracking-[0.16em] text-white/65">Todo listo</small>Enviar pedido por WhatsApp</span></button>
             </form>
           </motion.div>
