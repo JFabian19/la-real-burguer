@@ -427,6 +427,55 @@ a.footer-info-card:hover {
 @keyframes floatOrb { 0%, 100% { transform: translate3d(0, 0, 0) scale(1); } 50% { transform: translate3d(12px, -18px, 0) scale(1.05); } }
 @keyframes emberRise { 0%, 100% { transform: translateY(18px) scale(.7); opacity: .1; } 50% { transform: translateY(-24px) scale(1); opacity: .5; } }
 
+.crema-chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid rgba(255, 255, 255, .09);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, .04);
+  padding: 10px 14px;
+  color: rgba(255, 255, 255, .82);
+  transition: all .2s ease;
+  user-select: none;
+}
+
+.crema-chip:hover {
+  border-color: rgba(255, 157, 22, .35);
+  background: rgba(255, 157, 22, .06);
+}
+
+.crema-chip.selected {
+  border-color: #ff9d16;
+  background: linear-gradient(135deg, rgba(255, 157, 22, .18), rgba(223, 61, 33, .08));
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(255, 157, 22, .15), inset 0 0 0 1px rgba(255, 157, 22, .25);
+}
+
+.crema-quick-btn {
+  border: 1px solid rgba(255, 255, 255, .1);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .6);
+  background: rgba(255, 255, 255, .04);
+  transition: all .2s ease;
+}
+
+.crema-quick-btn:hover {
+  border-color: rgba(255, 157, 22, .4);
+  color: #ffb13a;
+}
+
+.crema-quick-btn.active {
+  border-color: #ff9d16;
+  background: rgba(255, 157, 22, .2);
+  color: #ffae2b;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
 }

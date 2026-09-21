@@ -7,12 +7,6 @@ const category = (id: string, nombre: string, rows: MenuRow[]): Category => ({
 });
 
 export const DEFAULT_MENU_DATA: Category[] = [
-  category('sandwich', 'Sánguches', [
-    ['Mixto pavita', 'S/. 12.00', 'Pan molde con queso mozzarella y jamón pavita.'],
-    ['Ciabatta con jamón', 'S/. 12.00', 'Con crema de queso, jamón americano, tomate y lechuga orgánica.'],
-    ['Croissant con pollo', 'S/. 12.00', 'Pollo desmenuzado con crema de mayonesa y mostaza.'],
-    ['Croissant con pollo y durazno', 'S/. 14.00'], ['Pollo clásico', 'S/. 12.00'], ['Pollo palta', 'S/. 14.00'],
-  ]),
   category('tequenos', 'Tequeños', [
     ['Tequeños de queso', 'S/. 14.90', '8 unidades con salsa de guacamole.'], ['Tequeños de queso con jamón', 'S/. 15.90', '8 unidades con salsa de guacamole.'],
     ['Tequeños de queso con hot dog', 'S/. 15.90', '8 unidades con salsa de guacamole.'], ['Tequeños de lomo saltado', 'S/. 15.90', '8 unidades con salsa de guacamole.'],

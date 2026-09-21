@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Galería de Platos - La Real Burger</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #0c0b09; color: #fff; margin: 0; padding: 24px; }
+    h1 { color: #ff9d16; text-align: center; }
+    p.sub { text-align: center; color: #aaa; margin-bottom: 30px; font-size: 14px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 18px; max-width: 1200px; margin: 0 auto; }
+    .card { background: #181512; border: 1px solid rgba(255,157,22,0.2); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; }
+    .card img { width: 100%; height: 180px; object-fit: cover; background: #222; }
+    .content { padding: 12px; flex: 1; display: flex; flex-direction: column; }
+    .cat { font-size: 10px; font-weight: bold; text-transform: uppercase; color: #ff9d16; letter-spacing: .1em; }
+    .title { font-size: 15px; font-weight: 800; margin: 4px 0; }
+    .price { font-size: 13px; font-weight: bold; color: #ffb13a; }
+    .score { font-size: 10px; color: #34d399; margin-top: auto; padding-top: 8px; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <h1>🍔 Galería de Imágenes Curadas con IA - La Real Burger</h1>
+  <p class="sub">Total de imágenes analizadas y asignadas: 149</p>
+  <div class="grid">
+    
+      <div class="card">
+        <img src="/assets/platos/tequenos-de-queso.webp" alt="Tequeños de queso" loading="lazy" />
+        <div class="content">
+          <span class="cat">Tequeños</span>
+          <span class="title">Tequeños de queso</span>
+          <span class="price">S/. 14.90</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/tequenos-de-queso-con-jamon.webp" alt="Tequeños de queso con jamón" loading="lazy" />
+        <div class="content">
+          <span class="cat">Tequeños</span>
+          <span class="title">Tequeños de queso con jamón</span>
+          <span class="price">S/. 15.90</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/tequenos-de-queso-con-hot-dog.webp" alt="Tequeños de queso con hot dog" loading="lazy" />
+        <div class="content">
+          <span class="cat">Tequeños</span>
+          <span class="title">Tequeños de queso con hot dog</span>
+          <span class="price">S/. 15.90</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/tequenos-de-lomo-saltado.webp" alt="Tequeños de lomo saltado" loading="lazy" />
+        <div class="content">
+          <span class="cat">Tequeños</span>
+          <span class="title">Tequeños de lomo saltado</span>
+          <span class="price">S/. 15.90</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/iced-tea-del-campo.webp" alt="Iced Tea del campo" loading="lazy" />
+        <div class="content">
+          <span class="cat">Bebidas refrescantes</span>
+          <span class="title">Iced Tea del campo</span>
+          <span class="price">S/. 8.00</span>
+          <span class="score">Puntuación IA: 103/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/iced-tea-con-naranja-y-limon.webp" alt="Iced Tea con naranja y limón" loading="lazy" />
+        <div class="content">
+          <span class="cat">Bebidas refrescantes</span>
+          <span class="title">Iced Tea con naranja y limón</span>
+          <span class="price">S/. 8.00</span>
+          <span class="score">Puntuación IA: 106/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/iced-tea-fresa-con-arandanos.webp" alt="Iced Tea fresa con arándanos" loading="lazy" />
+        <div class="content">
+          <span class="cat">Bebidas refrescantes</span>
+          <span class="title">Iced Tea fresa con arándanos</span>
+          <span class="price">S/. 10.00</span>
+          <span class="score">Puntuación IA: 106/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/iced-tea-fresa-con-naranja.webp" alt="Iced Tea fresa con naranja" loading="lazy" />
+        <div class="content">
+          <span class="cat">Bebidas refrescantes</span>
+          <span class="title">Iced Tea fresa con naranja</span>
+          <span class="price">S/. 8.00</span>
+          <span class="score">Puntuación IA: 106/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/iced-coffee-latte.webp" alt="Iced Coffee Latte" loading="lazy" />
+        <div class="content">
+          <span class="cat">Bebidas refrescantes</span>
+          <span class="title">Iced Coffee Latte</span>
+          <span class="price">S/. 10.00</span>
+          <span class="score">Puntuación IA: 118/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/chocolate-helado.webp" alt="Chocolate helado" loading="lazy" />
+        <div class="content">
+          <span class="cat">Bebidas refrescantes</span>
+          <span class="title">Chocolate helado</span>
+          <span class="price">S/. 10.00</span>
+          <span class="score">Puntuación IA: 118/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/jugo-de-platano.webp" alt="Jugo de plátano" loading="lazy" />
+        <div class="content">
+          <span class="cat">Jugos naturales</span>
+          <span class="title">Jugo de plátano</span>
+          <span class="price">S/. 7.00</span>
+          <span class="score">Puntuación IA: 118/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/jugo-de-fresa.webp" alt="Jugo de fresa" loading="lazy" />
+        <div class="content">
+          <span class="cat">Jugos naturales</span>
+          <span class="title">Jugo de fresa</span>
+          <span class="price">S/. 7.00</span>
+          <span class="score">Puntuación IA: 118/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/jugo-de-blueberry.webp" alt="Jugo de blueberry" loading="lazy" />
+        <div class="content">
+          <span class="cat">Jugos naturales</span>
+          <span class="title">Jugo de blueberry</span>
+          <span class="price">S/. 8.00</span>
+          <span class="score">Puntuación IA: 120/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/jugo-de-mango.webp" alt="Jugo de mango" loading="lazy" />
+        <div class="content">
+          <span class="cat">Jugos naturales</span>
+          <span class="title">Jugo de mango</span>
+          <span class="price">S/. 7.00</span>
+          <span class="score">Puntuación IA: 118/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/jugo-de-maracumango.webp" alt="Jugo de maracumango" loading="lazy" />
+        <div class="content">
+          <span class="cat">Jugos naturales</span>
+          <span class="title">Jugo de maracumango</span>
+          <span class="price">S/. 8.00</span>
+          <span class="score">Puntuación IA: 133/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/jugo-de-pina.webp" alt="Jugo de piña" loading="lazy" />
+        <div class="content">
+          <span class="cat">Jugos naturales</span>
+          <span class="title">Jugo de piña</span>
+          <span class="price">S/. 7.00</span>
+          <span class="score">Puntuación IA: 120/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/jugo-de-papaya.webp" alt="Jugo de papaya" loading="lazy" />
+        <div class="content">
+          <span class="cat">Jugos naturales</span>
+          <span class="title">Jugo de papaya</span>
+          <span class="price">S/. 7.00</span>
+          <span class="score">Puntuación IA: 133/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/jugo-de-fresa-con-papaya.webp" alt="Jugo de fresa con papaya" loading="lazy" />
+        <div class="content">
+          <span class="cat">Jugos naturales</span>
+          <span class="title">Jugo de fresa con papaya</span>
+          <span class="price">S/. 8.00</span>
+          <span class="score">Puntuación IA: 110.5/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/leche-adicional-para-jugo.webp" alt="Leche adicional para jugo" loading="lazy" />
+        <div class="content">
+          <span class="cat">Jugos naturales</span>
+          <span class="title">Leche adicional para jugo</span>
+          <span class="price">S/. 3.00</span>
+          <span class="score">Puntuación IA: 110.5/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/batido-de-fresa.webp" alt="Batido de fresa" loading="lazy" />
+        <div class="content">
+          <span class="cat">Batidos</span>
+          <span class="title">Batido de fresa</span>
+          <span class="price">S/. 13.00</span>
+          <span class="score">Puntuación IA: 120/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/banana-berry.webp" alt="Banana Berry" loading="lazy" />
+        <div class="content">
+          <span class="cat">Batidos</span>
+          <span class="title">Banana Berry</span>
+          <span class="price">S/. 13.00</span>
+          <span class="score">Puntuación IA: 118/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/papaya-energy.webp" alt="Papaya Energy" loading="lazy" />
+        <div class="content">
+          <span class="cat">Batidos</span>
+          <span class="title">Papaya Energy</span>
+          <span class="price">S/. 13.00</span>
+          <span class="score">Puntuación IA: 103/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/batido-de-mango.webp" alt="Batido de mango" loading="lazy" />
+        <div class="content">
+          <span class="cat">Batidos</span>
+          <span class="title">Batido de mango</span>
+          <span class="price">S/. 13.00</span>
+          <span class="score">Puntuación IA: 120/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/batido-de-maracumango.webp" alt="Batido de maracumango" loading="lazy" />
+        <div class="content">
+          <span class="cat">Batidos</span>
+          <span class="title">Batido de maracumango</span>
+          <span class="price">S/. 13.00</span>
+          <span class="score">Puntuación IA: 115/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/banana-fit-cream.webp" alt="Banana Fit Cream" loading="lazy" />
+        <div class="content">
+          <span class="cat">Batidos</span>
+          <span class="title">Banana Fit Cream</span>
+          <span class="price">S/. 13.00</span>
+          <span class="score">Puntuación IA: 123/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/batido-de-blueberry.webp" alt="Batido de blueberry" loading="lazy" />
+        <div class="content">
+          <span class="cat">Batidos</span>
+          <span class="title">Batido de blueberry</span>
+          <span class="price">S/. 13.00</span>
+          <span class="score">Puntuación IA: 118/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/frappe-capuccino.webp" alt="Frappe capuccino" loading="lazy" />
+        <div class="content">
+          <span class="cat">Frappés</span>
+          <span class="title">Frappe capuccino</span>
+          <span class="price">S/. 10.00</span>
+          <span class="score">Puntuación IA: 118/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/frappe-mocaccino.webp" alt="Frappe mocaccino" loading="lazy" />
+        <div class="content">
+          <span class="cat">Frappés</span>
+          <span class="title">Frappe mocaccino</span>
+          <span class="price">S/. 10.00</span>
+          <span class="score">Puntuación IA: 120/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/frappe-oreo.webp" alt="Frappe Oreo" loading="lazy" />
+        <div class="content">
+          <span class="cat">Frappés</span>
+          <span class="title">Frappe Oreo</span>
+          <span class="price">S/. 10.00</span>
+          <span class="score">Puntuación IA: 118/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/frappe-caramelo.webp" alt="Frappe caramelo" loading="lazy" />
+        <div class="content">
+          <span class="cat">Frappés</span>
+          <span class="title">Frappe caramelo</span>
+          <span class="price">S/. 10.00</span>
+          <span class="score">Puntuación IA: 118/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/frappe-chocolate.webp" alt="Frappe chocolate" loading="lazy" />
+        <div class="content">
+          <span class="cat">Frappés</span>
+          <span class="title">Frappe chocolate</span>
+          <span class="price">S/. 10.00</span>
+          <span class="score">Puntuación IA: 118/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/frappe-fresa-blueberry.webp" alt="Frappe fresa blueberry" loading="lazy" />
+        <div class="content">
+          <span class="cat">Frappés</span>
+          <span class="title">Frappe fresa blueberry</span>
+          <span class="price">S/. 10.00</span>
+          <span class="score">Puntuación IA: 110/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/frapuccino.webp" alt="Frapuccino" loading="lazy" />
+        <div class="content">
+          <span class="cat">Frappés</span>
+          <span class="title">Frapuccino</span>
+          <span class="price">S/. 10.00</span>
+          <span class="score">Puntuación IA: 120/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/frappe-maracuya.webp" alt="Frappe maracuyá" loading="lazy" />
+        <div class="content">
+          <span class="cat">Frappés</span>
+          <span class="title">Frappe maracuyá</span>
+          <span class="price">S/. 10.00</span>
+          <span class="score">Puntuación IA: 118/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/frappe-mango.webp" alt="Frappe mango" loading="lazy" />
+        <div class="content">
+          <span class="cat">Frappés</span>
+          <span class="title">Frappe mango</span>
+          <span class="price">S/. 10.00</span>
+          <span class="score">Puntuación IA: 120/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/frappe-lucuma.webp" alt="Frappe lúcuma" loading="lazy" />
+        <div class="content">
+          <span class="cat">Frappés</span>
+          <span class="title">Frappe lúcuma</span>
+          <span class="price">S/. 10.00</span>
+          <span class="score">Puntuación IA: 130/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/promo-2-frappes.webp" alt="Promo 2 Frappés" loading="lazy" />
+        <div class="content">
+          <span class="cat">Frappés</span>
+          <span class="title">Promo 2 Frappés</span>
+          <span class="price">S/. 15.00</span>
+          <span class="score">Puntuación IA: 103/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/alitas-clasicas.webp" alt="Alitas clásicas" loading="lazy" />
+        <div class="content">
+          <span class="cat">Alitas</span>
+          <span class="title">Alitas clásicas</span>
+          <span class="price">S/. 18.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/alitas-broaster.webp" alt="Alitas broaster" loading="lazy" />
+        <div class="content">
+          <span class="cat">Alitas</span>
+          <span class="title">Alitas broaster</span>
+          <span class="price">S/. 18.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/alitas-bufalo.webp" alt="Alitas búfalo" loading="lazy" />
+        <div class="content">
+          <span class="cat">Alitas</span>
+          <span class="title">Alitas búfalo</span>
+          <span class="price">S/. 18.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/alitas-en-salsa-de-maracuya.webp" alt="Alitas en salsa de maracuyá" loading="lazy" />
+        <div class="content">
+          <span class="cat">Alitas</span>
+          <span class="title">Alitas en salsa de maracuyá</span>
+          <span class="price">S/. 18.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/alitas-bbq.webp" alt="Alitas BBQ" loading="lazy" />
+        <div class="content">
+          <span class="cat">Alitas</span>
+          <span class="title">Alitas BBQ</span>
+          <span class="price">S/. 18.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/alitas-honey-mustard.webp" alt="Alitas Honey Mustard" loading="lazy" />
+        <div class="content">
+          <span class="cat">Alitas</span>
+          <span class="title">Alitas Honey Mustard</span>
+          <span class="price">S/. 18.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/alitas-acevichadas.webp" alt="Alitas acevichadas" loading="lazy" />
+        <div class="content">
+          <span class="cat">Alitas</span>
+          <span class="title">Alitas acevichadas</span>
+          <span class="price">S/. 18.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/alitas-hot-wings.webp" alt="Alitas Hot Wings" loading="lazy" />
+        <div class="content">
+          <span class="cat">Alitas</span>
+          <span class="title">Alitas Hot Wings</span>
+          <span class="price">S/. 19.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/duo-alitas.webp" alt="Duo alitas" loading="lazy" />
+        <div class="content">
+          <span class="cat">Alitas</span>
+          <span class="title">Duo alitas</span>
+          <span class="price">S/. 19.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/alitas-teriyaki.webp" alt="Alitas Teriyaki" loading="lazy" />
+        <div class="content">
+          <span class="cat">Alitas</span>
+          <span class="title">Alitas Teriyaki</span>
+          <span class="price">S/. 19.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/alitas-anticucheras.webp" alt="Alitas anticucheras" loading="lazy" />
+        <div class="content">
+          <span class="cat">Alitas</span>
+          <span class="title">Alitas anticucheras</span>
+          <span class="price">S/. 19.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/trio-de-alitas.webp" alt="Trío de alitas" loading="lazy" />
+        <div class="content">
+          <span class="cat">Alitas</span>
+          <span class="title">Trío de alitas</span>
+          <span class="price">S/. 34.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/alitas-familiar.webp" alt="Alitas familiar" loading="lazy" />
+        <div class="content">
+          <span class="cat">Alitas</span>
+          <span class="title">Alitas familiar</span>
+          <span class="price">S/. 70.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/mostrito.webp" alt="Mostrito" loading="lazy" />
+        <div class="content">
+          <span class="cat">Broaster</span>
+          <span class="title">Mostrito</span>
+          <span class="price">S/. 14.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/combo-broaster-1.webp" alt="Combo Broaster 1" loading="lazy" />
+        <div class="content">
+          <span class="cat">Broaster</span>
+          <span class="title">Combo Broaster 1</span>
+          <span class="price">S/. 14.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/combo-broaster-2.webp" alt="Combo Broaster 2" loading="lazy" />
+        <div class="content">
+          <span class="cat">Broaster</span>
+          <span class="title">Combo Broaster 2</span>
+          <span class="price">S/. 22.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/combo-broaster-3.webp" alt="Combo Broaster 3" loading="lazy" />
+        <div class="content">
+          <span class="cat">Broaster</span>
+          <span class="title">Combo Broaster 3</span>
+          <span class="price">S/. 43.90</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/lomo-saltado.webp" alt="Lomo saltado" loading="lazy" />
+        <div class="content">
+          <span class="cat">Platos especiales</span>
+          <span class="title">Lomo saltado</span>
+          <span class="price">S/. 24.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/pollo-saltado.webp" alt="Pollo saltado" loading="lazy" />
+        <div class="content">
+          <span class="cat">Platos especiales</span>
+          <span class="title">Pollo saltado</span>
+          <span class="price">S/. 24.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/pollo-a-la-plancha.webp" alt="Pollo a la plancha" loading="lazy" />
+        <div class="content">
+          <span class="cat">Platos especiales</span>
+          <span class="title">Pollo a la plancha</span>
+          <span class="price">S/. 24.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/arroz-chaufa-de-pollo.webp" alt="Arroz chaufa de pollo" loading="lazy" />
+        <div class="content">
+          <span class="cat">Platos especiales</span>
+          <span class="title">Arroz chaufa de pollo</span>
+          <span class="price">S/. 18.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/arroz-chaufa-de-carne.webp" alt="Arroz chaufa de carne" loading="lazy" />
+        <div class="content">
+          <span class="cat">Platos especiales</span>
+          <span class="title">Arroz chaufa de carne</span>
+          <span class="price">S/. 24.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/arroz-chaufa-de-cerdo.webp" alt="Arroz chaufa de cerdo" loading="lazy" />
+        <div class="content">
+          <span class="cat">Platos especiales</span>
+          <span class="title">Arroz chaufa de cerdo</span>
+          <span class="price">S/. 20.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/arroz-chaufa-3-sabores.webp" alt="Arroz chaufa 3 sabores" loading="lazy" />
+        <div class="content">
+          <span class="cat">Platos especiales</span>
+          <span class="title">Arroz chaufa 3 sabores</span>
+          <span class="price">S/. 25.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/burger-clasica.webp" alt="Burger clásica" loading="lazy" />
+        <div class="content">
+          <span class="cat">Hamburguesas</span>
+          <span class="title">Burger clásica</span>
+          <span class="price">S/. 10.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/cheese-burger.webp" alt="Cheese Burger" loading="lazy" />
+        <div class="content">
+          <span class="cat">Hamburguesas</span>
+          <span class="title">Cheese Burger</span>
+          <span class="price">S/. 12.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/cheddar-burger.webp" alt="Cheddar Burger" loading="lazy" />
+        <div class="content">
+          <span class="cat">Hamburguesas</span>
+          <span class="title">Cheddar Burger</span>
+          <span class="price">S/. 13.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/royal-burger.webp" alt="Royal Burger" loading="lazy" />
+        <div class="content">
+          <span class="cat">Hamburguesas</span>
+          <span class="title">Royal Burger</span>
+          <span class="price">S/. 12.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/royal-americana.webp" alt="Royal Americana" loading="lazy" />
+        <div class="content">
+          <span class="cat">Hamburguesas</span>
+          <span class="title">Royal Americana</span>
+          <span class="price">S/. 13.50</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/bacon-burger.webp" alt="Bacon Burger" loading="lazy" />
+        <div class="content">
+          <span class="cat">Hamburguesas</span>
+          <span class="title">Bacon Burger</span>
+          <span class="price">S/. 18.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/american-burger.webp" alt="American Burger" loading="lazy" />
+        <div class="content">
+          <span class="cat">Hamburguesas</span>
+          <span class="title">American Burger</span>
+          <span class="price">S/. 20.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/hawaiian-burger.webp" alt="Hawaiian Burger" loading="lazy" />
+        <div class="content">
+          <span class="cat">Hamburguesas</span>
+          <span class="title">Hawaiian Burger</span>
+          <span class="price">S/. 18.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/filete-clasico.webp" alt="Filete clásico" loading="lazy" />
+        <div class="content">
+          <span class="cat">Filete o desmenuzado</span>
+          <span class="title">Filete clásico</span>
+          <span class="price">S/. 10.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/filete-crispy.webp" alt="Filete crispy" loading="lazy" />
+        <div class="content">
+          <span class="cat">Filete o desmenuzado</span>
+          <span class="title">Filete crispy</span>
+          <span class="price">S/. 11.50</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/filete-con-queso.webp" alt="Filete con queso" loading="lazy" />
+        <div class="content">
+          <span class="cat">Filete o desmenuzado</span>
+          <span class="title">Filete con queso</span>
+          <span class="price">S/. 12.50</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/filete-royal.webp" alt="Filete Royal" loading="lazy" />
+        <div class="content">
+          <span class="cat">Filete o desmenuzado</span>
+          <span class="title">Filete Royal</span>
+          <span class="price">S/. 12.50</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/filete-royal-americana.webp" alt="Filete Royal Americana" loading="lazy" />
+        <div class="content">
+          <span class="cat">Filete o desmenuzado</span>
+          <span class="title">Filete Royal Americana</span>
+          <span class="price">S/. 14.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/filete-con-todo.webp" alt="Filete con todo" loading="lazy" />
+        <div class="content">
+          <span class="cat">Filete o desmenuzado</span>
+          <span class="title">Filete con todo</span>
+          <span class="price">S/. 16.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/chorizo-clasico.webp" alt="Chorizo clásico" loading="lazy" />
+        <div class="content">
+          <span class="cat">Chorizos y hot dogs</span>
+          <span class="title">Chorizo clásico</span>
+          <span class="price">S/. 10.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/chorizo-con-queso.webp" alt="Chorizo con queso" loading="lazy" />
+        <div class="content">
+          <span class="cat">Chorizos y hot dogs</span>
+          <span class="title">Chorizo con queso</span>
+          <span class="price">S/. 12.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/chorizo-royal.webp" alt="Chorizo Royal" loading="lazy" />
+        <div class="content">
+          <span class="cat">Chorizos y hot dogs</span>
+          <span class="title">Chorizo Royal</span>
+          <span class="price">S/. 12.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/chorizo-americano.webp" alt="Chorizo Americano" loading="lazy" />
+        <div class="content">
+          <span class="cat">Chorizos y hot dogs</span>
+          <span class="title">Chorizo Americano</span>
+          <span class="price">S/. 13.50</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/hot-dog-clasico.webp" alt="Hot dog clásico" loading="lazy" />
+        <div class="content">
+          <span class="cat">Chorizos y hot dogs</span>
+          <span class="title">Hot dog clásico</span>
+          <span class="price">S/. 7.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/hot-dog-royal.webp" alt="Hot dog Royal" loading="lazy" />
+        <div class="content">
+          <span class="cat">Chorizos y hot dogs</span>
+          <span class="title">Hot dog Royal</span>
+          <span class="price">S/. 10.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/salchipapa-clasica.webp" alt="Salchipapa clásica" loading="lazy" />
+        <div class="content">
+          <span class="cat">Salchipapas</span>
+          <span class="title">Salchipapa clásica</span>
+          <span class="price">S/. 13.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/salchi-pobre.webp" alt="Salchi pobre" loading="lazy" />
+        <div class="content">
+          <span class="cat">Salchipapas</span>
+          <span class="title">Salchi pobre</span>
+          <span class="price">S/. 15.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/chori-papa.webp" alt="Chori papa" loading="lazy" />
+        <div class="content">
+          <span class="cat">Salchipapas</span>
+          <span class="title">Chori papa</span>
+          <span class="price">S/. 15.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/chicken-crispy.webp" alt="Chicken Crispy" loading="lazy" />
+        <div class="content">
+          <span class="cat">Salchipapas</span>
+          <span class="title">Chicken Crispy</span>
+          <span class="price">S/. 15.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/salchipollo.webp" alt="Salchipollo" loading="lazy" />
+        <div class="content">
+          <span class="cat">Salchipapas</span>
+          <span class="title">Salchipollo</span>
+          <span class="price">S/. 16.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/salchipollo-crispy.webp" alt="Salchipollo Crispy" loading="lazy" />
+        <div class="content">
+          <span class="cat">Salchipapas</span>
+          <span class="title">Salchipollo Crispy</span>
+          <span class="price">S/. 17.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/salchi-burger.webp" alt="Salchi Burger" loading="lazy" />
+        <div class="content">
+          <span class="cat">Salchipapas</span>
+          <span class="title">Salchi Burger</span>
+          <span class="price">S/. 18.50</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/salchi-pollo-real.webp" alt="Salchi Pollo Real" loading="lazy" />
+        <div class="content">
+          <span class="cat">Salchipapas</span>
+          <span class="title">Salchi Pollo Real</span>
+          <span class="price">S/. 21.50</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/camionero.webp" alt="Camionero" loading="lazy" />
+        <div class="content">
+          <span class="cat">Salchipapas</span>
+          <span class="title">Camionero</span>
+          <span class="price">S/. 27.00</span>
+          <span class="score">Puntuación IA: 95/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/jarra-de-chicha-morada-lt.webp" alt="Jarra de chicha morada (½ Lt)" loading="lazy" />
+        <div class="content">
+          <span class="cat">Jarras</span>
+          <span class="title">Jarra de chicha morada (½ Lt)</span>
+          <span class="price">S/. 7.00</span>
+          <span class="score">Puntuación IA: 112.5/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/jarra-de-chicha-morada-1-lt.webp" alt="Jarra de chicha morada (1 Lt)" loading="lazy" />
+        <div class="content">
+          <span class="cat">Jarras</span>
+          <span class="title">Jarra de chicha morada (1 Lt)</span>
+          <span class="price">S/. 12.00</span>
+          <span class="score">Puntuación IA: 112.5/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/jarra-de-limonada-lt.webp" alt="Jarra de limonada (½ Lt)" loading="lazy" />
+        <div class="content">
+          <span class="cat">Jarras</span>
+          <span class="title">Jarra de limonada (½ Lt)</span>
+          <span class="price">S/. 7.00</span>
+          <span class="score">Puntuación IA: 110/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/jarra-de-limonada-1-lt.webp" alt="Jarra de limonada (1 Lt)" loading="lazy" />
+        <div class="content">
+          <span class="cat">Jarras</span>
+          <span class="title">Jarra de limonada (1 Lt)</span>
+          <span class="price">S/. 12.00</span>
+          <span class="score">Puntuación IA: 115/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/jarra-de-maracuya-lt.webp" alt="Jarra de maracuyá (½ Lt)" loading="lazy" />
+        <div class="content">
+          <span class="cat">Jarras</span>
+          <span class="title">Jarra de maracuyá (½ Lt)</span>
+          <span class="price">S/. 7.00</span>
+          <span class="score">Puntuación IA: 108/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/jarra-de-maracuya-1-lt.webp" alt="Jarra de maracuyá (1 Lt)" loading="lazy" />
+        <div class="content">
+          <span class="cat">Jarras</span>
+          <span class="title">Jarra de maracuyá (1 Lt)</span>
+          <span class="price">S/. 12.00</span>
+          <span class="score">Puntuación IA: 108/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/jarra-de-naranjada-lt.webp" alt="Jarra de naranjada (½ Lt)" loading="lazy" />
+        <div class="content">
+          <span class="cat">Jarras</span>
+          <span class="title">Jarra de naranjada (½ Lt)</span>
+          <span class="price">S/. 7.00</span>
+          <span class="score">Puntuación IA: 108/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/jarra-de-naranjada-1-lt.webp" alt="Jarra de naranjada (1 Lt)" loading="lazy" />
+        <div class="content">
+          <span class="cat">Jarras</span>
+          <span class="title">Jarra de naranjada (1 Lt)</span>
+          <span class="price">S/. 12.00</span>
+          <span class="score">Puntuación IA: 108/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/jarra-de-fresa-lt.webp" alt="Jarra de fresa (½ Lt)" loading="lazy" />
+        <div class="content">
+          <span class="cat">Jarras</span>
+          <span class="title">Jarra de fresa (½ Lt)</span>
+          <span class="price">S/. 8.50</span>
+          <span class="score">Puntuación IA: 108/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/jarra-de-fresa-1-lt.webp" alt="Jarra de fresa (1 Lt)" loading="lazy" />
+        <div class="content">
+          <span class="cat">Jarras</span>
+          <span class="title">Jarra de fresa (1 Lt)</span>
+          <span class="price">S/. 16.00</span>
+          <span class="score">Puntuación IA: 108/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/jarra-de-mango-lt.webp" alt="Jarra de mango (½ Lt)" loading="lazy" />
+        <div class="content">
+          <span class="cat">Jarras</span>
+          <span class="title">Jarra de mango (½ Lt)</span>
+          <span class="price">S/. 8.50</span>
+          <span class="score">Puntuación IA: 110/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/jarra-de-mango-1-lt.webp" alt="Jarra de mango (1 Lt)" loading="lazy" />
+        <div class="content">
+          <span class="cat">Jarras</span>
+          <span class="title">Jarra de mango (1 Lt)</span>
+          <span class="price">S/. 16.00</span>
+          <span class="score">Puntuación IA: 110/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/jarra-de-papaya-lt.webp" alt="Jarra de papaya (½ Lt)" loading="lazy" />
+        <div class="content">
+          <span class="cat">Jarras</span>
+          <span class="title">Jarra de papaya (½ Lt)</span>
+          <span class="price">S/. 8.50</span>
+          <span class="score">Puntuación IA: 115/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/jarra-de-papaya-1-lt.webp" alt="Jarra de papaya (1 Lt)" loading="lazy" />
+        <div class="content">
+          <span class="cat">Jarras</span>
+          <span class="title">Jarra de papaya (1 Lt)</span>
+          <span class="price">S/. 16.00</span>
+          <span class="score">Puntuación IA: 100/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/jarra-de-pina-lt.webp" alt="Jarra de piña (½ Lt)" loading="lazy" />
+        <div class="content">
+          <span class="cat">Jarras</span>
+          <span class="title">Jarra de piña (½ Lt)</span>
+          <span class="price">S/. 8.50</span>
+          <span class="score">Puntuación IA: 108/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/jarra-de-pina-1-lt.webp" alt="Jarra de piña (1 Lt)" loading="lazy" />
+        <div class="content">
+          <span class="cat">Jarras</span>
+          <span class="title">Jarra de piña (1 Lt)</span>
+          <span class="price">S/. 16.00</span>
+          <span class="score">Puntuación IA: 108/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/jarra-de-maracumango-lt.webp" alt="Jarra de maracumango (½ Lt)" loading="lazy" />
+        <div class="content">
+          <span class="cat">Jarras</span>
+          <span class="title">Jarra de maracumango (½ Lt)</span>
+          <span class="price">S/. 9.50</span>
+          <span class="score">Puntuación IA: 115/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/jarra-de-maracumango-1-lt.webp" alt="Jarra de maracumango (1 Lt)" loading="lazy" />
+        <div class="content">
+          <span class="cat">Jarras</span>
+          <span class="title">Jarra de maracumango (1 Lt)</span>
+          <span class="price">S/. 18.00</span>
+          <span class="score">Puntuación IA: 115/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/agua-cielo.webp" alt="Agua Cielo" loading="lazy" />
+        <div class="content">
+          <span class="cat">Bebidas heladas</span>
+          <span class="title">Agua Cielo</span>
+          <span class="price">S/. 2.00</span>
+          <span class="score">Puntuación IA: 130/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/agua-san-luis.webp" alt="Agua San Luis" loading="lazy" />
+        <div class="content">
+          <span class="cat">Bebidas heladas</span>
+          <span class="title">Agua San Luis</span>
+          <span class="price">S/. 3.00</span>
+          <span class="score">Puntuación IA: 120/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/gaseosa-de-600-ml.webp" alt="Gaseosa de 600 ml" loading="lazy" />
+        <div class="content">
+          <span class="cat">Bebidas heladas</span>
+          <span class="title">Gaseosa de 600 ml</span>
+          <span class="price">S/. 5.00</span>
+          <span class="score">Puntuación IA: 120/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/gaseosa-de-1-lt.webp" alt="Gaseosa de 1 Lt" loading="lazy" />
+        <div class="content">
+          <span class="cat">Bebidas heladas</span>
+          <span class="title">Gaseosa de 1 Lt</span>
+          <span class="price">S/. 9.00</span>
+          <span class="score">Puntuación IA: 118/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/gaseosa-de-2-lt.webp" alt="Gaseosa de 2 Lt" loading="lazy" />
+        <div class="content">
+          <span class="cat">Bebidas heladas</span>
+          <span class="title">Gaseosa de 2 Lt</span>
+          <span class="price">S/. 16.00</span>
+          <span class="score">Puntuación IA: 120/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/te.webp" alt="Té" loading="lazy" />
+        <div class="content">
+          <span class="cat">Bebidas calientes</span>
+          <span class="title">Té</span>
+          <span class="price">S/. 3.00</span>
+          <span class="score">Puntuación IA: 90/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/manzanilla.webp" alt="Manzanilla" loading="lazy" />
+        <div class="content">
+          <span class="cat">Bebidas calientes</span>
+          <span class="title">Manzanilla</span>
+          <span class="price">S/. 3.00</span>
+          <span class="score">Puntuación IA: 118/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/anis.webp" alt="Anís" loading="lazy" />
+        <div class="content">
+          <span class="cat">Bebidas calientes</span>
+          <span class="title">Anís</span>
+          <span class="price">S/. 3.00</span>
+          <span class="score">Puntuación IA: 120/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/hierba-luisa.webp" alt="Hierba luisa" loading="lazy" />
+        <div class="content">
+          <span class="cat">Bebidas calientes</span>
+          <span class="title">Hierba luisa</span>
+          <span class="price">S/. 3.00</span>
+          <span class="score">Puntuación IA: 120/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/cafe-gourmet.webp" alt="Café gourmet" loading="lazy" />
+        <div class="content">
+          <span class="cat">Bebidas calientes</span>
+          <span class="title">Café gourmet</span>
+          <span class="price">S/. 4.00</span>
+          <span class="score">Puntuación IA: 105/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/te-negro.webp" alt="Té negro" loading="lazy" />
+        <div class="content">
+          <span class="cat">Bebidas calientes</span>
+          <span class="title">Té negro</span>
+          <span class="price">S/. 5.00</span>
+          <span class="score">Puntuación IA: 130/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/te-de-la-abuela.webp" alt="Té de la abuela" loading="lazy" />
+        <div class="content">
+          <span class="cat">Bebidas calientes</span>
+          <span class="title">Té de la abuela</span>
+          <span class="price">S/. 5.00</span>
+          <span class="score">Puntuación IA: 120/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/emoliente-clasico.webp" alt="Emoliente clásico" loading="lazy" />
+        <div class="content">
+          <span class="cat">Bebidas calientes</span>
+          <span class="title">Emoliente clásico</span>
+          <span class="price">S/. 6.00</span>
+          <span class="score">Puntuación IA: 120/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/emoliente-de-maracuya.webp" alt="Emoliente de maracuyá" loading="lazy" />
+        <div class="content">
+          <span class="cat">Bebidas calientes</span>
+          <span class="title">Emoliente de maracuyá</span>
+          <span class="price">S/. 6.00</span>
+          <span class="score">Puntuación IA: 118/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/emoliente-de-fresa.webp" alt="Emoliente de fresa" loading="lazy" />
+        <div class="content">
+          <span class="cat">Bebidas calientes</span>
+          <span class="title">Emoliente de fresa</span>
+          <span class="price">S/. 6.00</span>
+          <span class="score">Puntuación IA: 118/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/emoliente-de-mango.webp" alt="Emoliente de mango" loading="lazy" />
+        <div class="content">
+          <span class="cat">Bebidas calientes</span>
+          <span class="title">Emoliente de mango</span>
+          <span class="price">S/. 6.00</span>
+          <span class="score">Puntuación IA: 118/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/chocolate-caliente.webp" alt="Chocolate caliente" loading="lazy" />
+        <div class="content">
+          <span class="cat">Bebidas calientes</span>
+          <span class="title">Chocolate caliente</span>
+          <span class="price">S/. 10.00</span>
+          <span class="score">Puntuación IA: 118/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/mojito-clasico.webp" alt="Mojito clásico" loading="lazy" />
+        <div class="content">
+          <span class="cat">Mojitos</span>
+          <span class="title">Mojito clásico</span>
+          <span class="price">S/. 15.00</span>
+          <span class="score">Puntuación IA: 120/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/mojito-de-fresa.webp" alt="Mojito de fresa" loading="lazy" />
+        <div class="content">
+          <span class="cat">Mojitos</span>
+          <span class="title">Mojito de fresa</span>
+          <span class="price">S/. 15.00</span>
+          <span class="score">Puntuación IA: 120/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/mojito-de-maracuya.webp" alt="Mojito de maracuyá" loading="lazy" />
+        <div class="content">
+          <span class="cat">Mojitos</span>
+          <span class="title">Mojito de maracuyá</span>
+          <span class="price">S/. 15.00</span>
+          <span class="score">Puntuación IA: 130/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/mojito-de-mango.webp" alt="Mojito de mango" loading="lazy" />
+        <div class="content">
+          <span class="cat">Mojitos</span>
+          <span class="title">Mojito de mango</span>
+          <span class="price">S/. 15.00</span>
+          <span class="score">Puntuación IA: 118/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/mojito-de-maracumango.webp" alt="Mojito de maracumango" loading="lazy" />
+        <div class="content">
+          <span class="cat">Mojitos</span>
+          <span class="title">Mojito de maracumango</span>
+          <span class="price">S/. 15.00</span>
+          <span class="score">Puntuación IA: 103/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/mojito-blue-curacao.webp" alt="Mojito Blue Curaçao" loading="lazy" />
+        <div class="content">
+          <span class="cat">Mojitos</span>
+          <span class="title">Mojito Blue Curaçao</span>
+          <span class="price">S/. 15.00</span>
+          <span class="score">Puntuación IA: 118/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/mojito-jager.webp" alt="Mojito Jager" loading="lazy" />
+        <div class="content">
+          <span class="cat">Mojitos</span>
+          <span class="title">Mojito Jager</span>
+          <span class="price">S/. 18.00</span>
+          <span class="score">Puntuación IA: 118/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/mojito-blueberry.webp" alt="Mojito Blueberry" loading="lazy" />
+        <div class="content">
+          <span class="cat">Mojitos</span>
+          <span class="title">Mojito Blueberry</span>
+          <span class="price">S/. 18.00</span>
+          <span class="score">Puntuación IA: 120/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/mojito-corona.webp" alt="Mojito Corona" loading="lazy" />
+        <div class="content">
+          <span class="cat">Mojitos</span>
+          <span class="title">Mojito Corona</span>
+          <span class="price">S/. 18.00</span>
+          <span class="score">Puntuación IA: 118/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/promo-2-mojitos.webp" alt="Promo 2 mojitos" loading="lazy" />
+        <div class="content">
+          <span class="cat">Mojitos</span>
+          <span class="title">Promo 2 mojitos</span>
+          <span class="price">S/. 22.00</span>
+          <span class="score">Puntuación IA: 133/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/promo-2-mojitos-corona.webp" alt="Promo 2 mojitos Corona" loading="lazy" />
+        <div class="content">
+          <span class="cat">Mojitos</span>
+          <span class="title">Promo 2 mojitos Corona</span>
+          <span class="price">S/. 32.00</span>
+          <span class="score">Puntuación IA: 123/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/pisco-sour.webp" alt="Pisco Sour" loading="lazy" />
+        <div class="content">
+          <span class="cat">Cócteles</span>
+          <span class="title">Pisco Sour</span>
+          <span class="price">S/. 15.00</span>
+          <span class="score">Puntuación IA: 133/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/pina-colada.webp" alt="Piña colada" loading="lazy" />
+        <div class="content">
+          <span class="cat">Cócteles</span>
+          <span class="title">Piña colada</span>
+          <span class="price">S/. 15.00</span>
+          <span class="score">Puntuación IA: 118/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/algarrobina.webp" alt="Algarrobina" loading="lazy" />
+        <div class="content">
+          <span class="cat">Cócteles</span>
+          <span class="title">Algarrobina</span>
+          <span class="price">S/. 15.00</span>
+          <span class="score">Puntuación IA: 130/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/laguna-azul.webp" alt="Laguna Azul" loading="lazy" />
+        <div class="content">
+          <span class="cat">Cócteles</span>
+          <span class="title">Laguna Azul</span>
+          <span class="price">S/. 15.00</span>
+          <span class="score">Puntuación IA: 118/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/machu-picchu.webp" alt="Machu Picchu" loading="lazy" />
+        <div class="content">
+          <span class="cat">Cócteles</span>
+          <span class="title">Machu Picchu</span>
+          <span class="price">S/. 15.00</span>
+          <span class="score">Puntuación IA: 120/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/daiquiri.webp" alt="Daiquiri" loading="lazy" />
+        <div class="content">
+          <span class="cat">Cócteles</span>
+          <span class="title">Daiquiri</span>
+          <span class="price">S/. 15.00</span>
+          <span class="score">Puntuación IA: 120/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/chilcano.webp" alt="Chilcano" loading="lazy" />
+        <div class="content">
+          <span class="cat">Cócteles</span>
+          <span class="title">Chilcano</span>
+          <span class="price">S/. 15.00</span>
+          <span class="score">Puntuación IA: 120/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/pink-panther.webp" alt="Pink Panther" loading="lazy" />
+        <div class="content">
+          <span class="cat">Cócteles</span>
+          <span class="title">Pink Panther</span>
+          <span class="price">S/. 18.00</span>
+          <span class="score">Puntuación IA: 120/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/cusquena-dorada.webp" alt="Cusqueña Dorada" loading="lazy" />
+        <div class="content">
+          <span class="cat">Cervezas</span>
+          <span class="title">Cusqueña Dorada</span>
+          <span class="price">S/. 12.00</span>
+          <span class="score">Puntuación IA: 130/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/cusquena-trigo.webp" alt="Cusqueña Trigo" loading="lazy" />
+        <div class="content">
+          <span class="cat">Cervezas</span>
+          <span class="title">Cusqueña Trigo</span>
+          <span class="price">S/. 12.00</span>
+          <span class="score">Puntuación IA: 133/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/cusquena-negra.webp" alt="Cusqueña Negra" loading="lazy" />
+        <div class="content">
+          <span class="cat">Cervezas</span>
+          <span class="title">Cusqueña Negra</span>
+          <span class="price">S/. 12.00</span>
+          <span class="score">Puntuación IA: 135/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/pilsen.webp" alt="Pilsen" loading="lazy" />
+        <div class="content">
+          <span class="cat">Cervezas</span>
+          <span class="title">Pilsen</span>
+          <span class="price">S/. 12.00</span>
+          <span class="score">Puntuación IA: 135/100</span>
+        </div>
+      </div>
+    
+      <div class="card">
+        <img src="/assets/platos/corona.webp" alt="Corona" loading="lazy" />
+        <div class="content">
+          <span class="cat">Cervezas</span>
+          <span class="title">Corona</span>
+          <span class="price">S/. 18.00</span>
+          <span class="score">Puntuación IA: 120/100</span>
+        </div>
+      </div>
+    
+  </div>
+</body>
+</html>

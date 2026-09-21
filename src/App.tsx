@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-  Bike, CheckCircle2, ChevronRight, Clock3, Facebook, Gift, Instagram, Loader2, MapPin, Minus,
-  Navigation, Phone, Plus, ShoppingBag, Star, Store, Trash2,
+  Bike, Check, CheckCircle2, ChevronRight, Clock3, Facebook, Gift, Instagram, Loader2, MapPin, Minus,
+  Navigation, Phone, Plus, ShoppingBag, SlidersHorizontal, Star, Store, Trash2,
   UserRound, Utensils, X,
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
@@ -20,23 +20,279 @@ const LOGO_PATH = '/assets/la-real-logo.png';
 const BANNER_PATH = '/assets/la-real-banner.png';
 const BIRTHDAY_PROMO_PATH = '/assets/birthday-promo.png';
 const MARQUEE_TEXT = '🔥 HAMBURGUESAS CON SABOR REAL • PEDIDOS RÁPIDOS POR WHATSAPP • RECOJO EN TIENDA O DELIVERY • ';
-const LOCAL_IMAGES: Record<string, string> = {};
+const LOCAL_IMAGES: Record<string, string> = {
+  'Burger clásica': '/assets/platos/burger-clasica.webp',
+  'Cheese Burger': '/assets/platos/cheese-burger.webp',
+  'Cheddar Burger': '/assets/platos/cheddar-burger.webp',
+  'Royal Burger': '/assets/platos/royal-burger.webp',
+  'Royal Americana': '/assets/platos/royal-americana.webp',
+  'Bacon Burger': '/assets/platos/bacon-burger.webp',
+  'American Burger': '/assets/platos/american-burger.webp',
+  'Hawaiian Burger': '/assets/platos/hawaiian-burger.webp',
+  'Salchipapa clásica': '/assets/platos/salchipapa-clasica.webp',
+  'Salchi pobre': '/assets/platos/salchi-pobre.webp',
+  'Chori papa': '/assets/platos/chori-papa.webp',
+  'Chicken Crispy': '/assets/platos/chicken-crispy.webp',
+  'Salchipollo': '/assets/platos/salchipollo.webp',
+  'Salchipollo Crispy': '/assets/platos/salchipollo-crispy.webp',
+  'Salchi Burger': '/assets/platos/salchi-burger.webp',
+  'Salchi Pollo Real': '/assets/platos/salchi-pollo-real.webp',
+  'Camionero': '/assets/platos/camionero.webp',
+  'Mostrito': '/assets/platos/mostrito.webp',
+  'Combo Broaster 1': '/assets/platos/combo-broaster-1.webp',
+  'Combo Broaster 2': '/assets/platos/combo-broaster-2.webp',
+  'Combo Broaster 3': '/assets/platos/combo-broaster-3.webp',
+  'Tequeños de queso': '/assets/platos/tequenos-de-queso.webp',
+  'Tequeños de queso con jamón': '/assets/platos/tequenos-de-queso-con-jamon.webp',
+  'Tequeños de queso con hot dog': '/assets/platos/tequenos-de-queso-con-hot-dog.webp',
+  'Tequeños de lomo saltado': '/assets/platos/tequenos-de-lomo-saltado.webp',
+  'Filete clásico': '/assets/platos/filete-clasico.webp',
+  'Filete crispy': '/assets/platos/filete-crispy.webp',
+  'Filete con queso': '/assets/platos/filete-con-queso.webp',
+  'Filete Royal': '/assets/platos/filete-royal.webp',
+  'Filete Royal Americana': '/assets/platos/filete-royal-americana.webp',
+  'Filete con todo': '/assets/platos/filete-con-todo.webp',
+  'Chorizo clásico': '/assets/platos/chorizo-clasico.webp',
+  'Chorizo con queso': '/assets/platos/chorizo-con-queso.webp',
+  'Chorizo Royal': '/assets/platos/chorizo-royal.webp',
+  'Chorizo Americano': '/assets/platos/chorizo-americano.webp',
+  'Hot dog clásico': '/assets/platos/hot-dog-clasico.webp',
+  'Hot dog Royal': '/assets/platos/hot-dog-royal.webp',
+  'Lomo saltado': '/assets/platos/lomo-saltado.webp',
+  'Pollo saltado': '/assets/platos/pollo-saltado.webp',
+  'Pollo a la plancha': '/assets/platos/pollo-a-la-plancha.webp',
+  'Arroz chaufa de pollo': '/assets/platos/arroz-chaufa-de-pollo.webp',
+  'Arroz chaufa de carne': '/assets/platos/arroz-chaufa-de-carne.webp',
+  'Arroz chaufa de cerdo': '/assets/platos/arroz-chaufa-de-cerdo.webp',
+  'Arroz chaufa 3 sabores': '/assets/platos/arroz-chaufa-3-sabores.webp',
+  'Alitas clásicas': '/assets/platos/alitas-clasicas.webp',
+  'Alitas broaster': '/assets/platos/alitas-broaster.webp',
+  'Alitas búfalo': '/assets/platos/alitas-bufalo.webp',
+  'Alitas en salsa de maracuyá': '/assets/platos/alitas-en-salsa-de-maracuya.webp',
+  'Alitas BBQ': '/assets/platos/alitas-bbq.webp',
+  'Alitas Honey Mustard': '/assets/platos/alitas-honey-mustard.webp',
+  'Alitas acevichadas': '/assets/platos/alitas-acevichadas.webp',
+  'Alitas Hot Wings': '/assets/platos/alitas-hot-wings.webp',
+  'Duo alitas': '/assets/platos/duo-alitas.webp',
+  'Alitas Teriyaki': '/assets/platos/alitas-teriyaki.webp',
+  'Alitas anticucheras': '/assets/platos/alitas-anticucheras.webp',
+  'Trío de alitas': '/assets/platos/trio-de-alitas.webp',
+  'Alitas familiar': '/assets/platos/alitas-familiar.webp',
+  'Iced Tea del campo': '/assets/platos/iced-tea-del-campo.webp',
+  'Iced Tea con naranja y limón': '/assets/platos/iced-tea-con-naranja-y-limon.webp',
+  'Iced Tea fresa con arándanos': '/assets/platos/iced-tea-fresa-con-arandanos.webp',
+  'Iced Tea fresa con naranja': '/assets/platos/iced-tea-fresa-con-naranja.webp',
+  'Iced Coffee Latte': '/assets/platos/iced-coffee-latte.webp',
+  'Chocolate helado': '/assets/platos/chocolate-helado.webp',
+  'Jugo de plátano': '/assets/platos/jugo-de-platano.webp',
+  'Jugo de fresa': '/assets/platos/jugo-de-fresa.webp',
+  'Jugo de blueberry': '/assets/platos/jugo-de-blueberry.webp',
+  'Jugo de mango': '/assets/platos/jugo-de-mango.webp',
+  'Jugo de maracumango': '/assets/platos/jugo-de-maracumango.webp',
+  'Jugo de piña': '/assets/platos/jugo-de-pina.webp',
+  'Jugo de papaya': '/assets/platos/jugo-de-papaya.webp',
+  'Jugo de fresa con papaya': '/assets/platos/jugo-de-fresa-con-papaya.webp',
+  'Leche adicional para jugo': '/assets/platos/leche-adicional-para-jugo.webp',
+  'Batido de fresa': '/assets/platos/batido-de-fresa.webp',
+  'Banana Berry': '/assets/platos/banana-berry.webp',
+  'Papaya Energy': '/assets/platos/papaya-energy.webp',
+  'Batido de mango': '/assets/platos/batido-de-mango.webp',
+  'Batido de maracumango': '/assets/platos/batido-de-maracumango.webp',
+  'Banana Fit Cream': '/assets/platos/banana-fit-cream.webp',
+  'Batido de blueberry': '/assets/platos/batido-de-blueberry.webp',
+  'Frappe capuccino': '/assets/platos/frappe-capuccino.webp',
+  'Frappe mocaccino': '/assets/platos/frappe-mocaccino.webp',
+  'Frappe Oreo': '/assets/platos/frappe-oreo.webp',
+  'Frappe caramelo': '/assets/platos/frappe-caramelo.webp',
+  'Frappe chocolate': '/assets/platos/frappe-chocolate.webp',
+  'Frappe fresa blueberry': '/assets/platos/frappe-fresa-blueberry.webp',
+  'Frapuccino': '/assets/platos/frapuccino.webp',
+  'Frappe maracuyá': '/assets/platos/frappe-maracuya.webp',
+  'Frappe mango': '/assets/platos/frappe-mango.webp',
+  'Frappe lúcuma': '/assets/platos/frappe-lucuma.webp',
+  'Promo 2 Frappés': '/assets/platos/promo-2-frappes.webp',
+  'Jarra de chicha morada (½ Lt)': '/assets/platos/jarra-de-chicha-morada-lt.webp',
+  'Jarra de chicha morada (1 Lt)': '/assets/platos/jarra-de-chicha-morada-1-lt.webp',
+  'Jarra de limonada (½ Lt)': '/assets/platos/jarra-de-limonada-lt.webp',
+  'Jarra de limonada (1 Lt)': '/assets/platos/jarra-de-limonada-1-lt.webp',
+  'Jarra de maracuyá (½ Lt)': '/assets/platos/jarra-de-maracuya-lt.webp',
+  'Jarra de maracuyá (1 Lt)': '/assets/platos/jarra-de-maracuya-1-lt.webp',
+  'Jarra de naranjada (½ Lt)': '/assets/platos/jarra-de-naranjada-lt.webp',
+  'Jarra de naranjada (1 Lt)': '/assets/platos/jarra-de-naranjada-1-lt.webp',
+  'Jarra de fresa (½ Lt)': '/assets/platos/jarra-de-fresa-lt.webp',
+  'Jarra de fresa (1 Lt)': '/assets/platos/jarra-de-fresa-1-lt.webp',
+  'Jarra de mango (½ Lt)': '/assets/platos/jarra-de-mango-lt.webp',
+  'Jarra de mango (1 Lt)': '/assets/platos/jarra-de-mango-1-lt.webp',
+  'Jarra de papaya (½ Lt)': '/assets/platos/jarra-de-papaya-lt.webp',
+  'Jarra de papaya (1 Lt)': '/assets/platos/jarra-de-papaya-1-lt.webp',
+  'Jarra de piña (½ Lt)': '/assets/platos/jarra-de-pina-lt.webp',
+  'Jarra de piña (1 Lt)': '/assets/platos/jarra-de-pina-1-lt.webp',
+  'Jarra de maracumango (½ Lt)': '/assets/platos/jarra-de-maracumango-lt.webp',
+  'Jarra de maracumango (1 Lt)': '/assets/platos/jarra-de-maracumango-1-lt.webp',
+  'Agua Cielo': '/assets/platos/agua-cielo.webp',
+  'Agua San Luis': '/assets/platos/agua-san-luis.webp',
+  'Gaseosa de 600 ml': '/assets/platos/gaseosa-de-600-ml.webp',
+  'Gaseosa de 1 Lt': '/assets/platos/gaseosa-de-1-lt.webp',
+  'Gaseosa de 2 Lt': '/assets/platos/gaseosa-de-2-lt.webp',
+  'Té': '/assets/platos/te.webp',
+  'Manzanilla': '/assets/platos/manzanilla.webp',
+  'Anís': '/assets/platos/anis.webp',
+  'Hierba luisa': '/assets/platos/hierba-luisa.webp',
+  'Café gourmet': '/assets/platos/cafe-gourmet.webp',
+  'Té negro': '/assets/platos/te-negro.webp',
+  'Té de la abuela': '/assets/platos/te-de-la-abuela.webp',
+  'Emoliente clásico': '/assets/platos/emoliente-clasico.webp',
+  'Emoliente de maracuyá': '/assets/platos/emoliente-de-maracuya.webp',
+  'Emoliente de fresa': '/assets/platos/emoliente-de-fresa.webp',
+  'Emoliente de mango': '/assets/platos/emoliente-de-mango.webp',
+  'Chocolate caliente': '/assets/platos/chocolate-caliente.webp',
+  'Mojito clásico': '/assets/platos/mojito-clasico.webp',
+  'Mojito de fresa': '/assets/platos/mojito-de-fresa.webp',
+  'Mojito de maracuyá': '/assets/platos/mojito-de-maracuya.webp',
+  'Mojito de mango': '/assets/platos/mojito-de-mango.webp',
+  'Mojito de maracumango': '/assets/platos/mojito-de-maracumango.webp',
+  'Mojito Blue Curaçao': '/assets/platos/mojito-blue-curacao.webp',
+  'Mojito Jager': '/assets/platos/mojito-jager.webp',
+  'Mojito Blueberry': '/assets/platos/mojito-blueberry.webp',
+  'Mojito Corona': '/assets/platos/mojito-corona.webp',
+  'Promo 2 mojitos': '/assets/platos/promo-2-mojitos.webp',
+  'Promo 2 mojitos Corona': '/assets/platos/promo-2-mojitos-corona.webp',
+  'Pisco Sour': '/assets/platos/pisco-sour.webp',
+  'Piña colada': '/assets/platos/pina-colada.webp',
+  'Algarrobina': '/assets/platos/algarrobina.webp',
+  'Laguna Azul': '/assets/platos/laguna-azul.webp',
+  'Machu Picchu': '/assets/platos/machu-picchu.webp',
+  'Daiquiri': '/assets/platos/daiquiri.webp',
+  'Chilcano': '/assets/platos/chilcano.webp',
+  'Pink Panther': '/assets/platos/pink-panther.webp',
+  'Cusqueña Dorada': '/assets/platos/cusquena-dorada.webp',
+  'Cusqueña Trigo': '/assets/platos/cusquena-trigo.webp',
+  'Cusqueña Negra': '/assets/platos/cusquena-negra.webp',
+  'Pilsen': '/assets/platos/pilsen.webp',
+  'Corona': '/assets/platos/corona.webp',
+};
 
 interface Dish { nombre: string; descripcion?: string; imagen?: string; precio: string; }
 interface Category { id: string; nombre: string; items: Dish[]; }
-interface CartItem { nombre: string; precio: string; cantidad: number; }
+interface CartItem {
+  id: string;
+  nombre: string;
+  precio: string;
+  cantidad: number;
+  categoriaId?: string;
+  cremas?: string[];
+  comentario?: string;
+  isCustomizable?: boolean;
+}
 type OrderType = 'delivery' | 'pickup';
 interface OrderData { nombre: string; telefono: string; direccion: string; referencia: string; nombreRecojo: string; }
 interface UserLocation { latitude: number; longitude: number; accuracy: number; }
 
+const CREMAS_DISPONIBLES = [
+  { id: 'ketchup', nombre: 'Kétchup', emoji: '🍅' },
+  { id: 'mostaza', nombre: 'Mostaza', emoji: '🟡' },
+  { id: 'aji', nombre: 'Ají de la casa', emoji: '🌶️' },
+  { id: 'chimichurri', nombre: 'Chimichurri', emoji: '🌿' },
+  { id: 'mayonesa', nombre: 'Mayonesa', emoji: '⚪' },
+  { id: 'aceituna', nombre: 'Aceituna', emoji: '🫒' },
+];
+
+const isExcludedCategory = (value: string) => /waffle|gofre|^s[aá]nguches?$/i.test(value.trim());
 const isWaffleRelated = (value: string) => /waffle|gofre/i.test(value);
 const sanitizeCategories = (items: Category[]) => items
-  .filter(category => !isWaffleRelated(`${category.id} ${category.nombre}`))
+  .filter(category => !isExcludedCategory(category.nombre) && !isExcludedCategory(category.id))
   .map(category => ({
     ...category,
-    items: category.items.filter(dish => !isWaffleRelated(`${dish.nombre} ${dish.descripcion || ''}`)),
+    items: category.items
+      .filter(dish => !isWaffleRelated(`${dish.nombre} ${dish.descripcion || ''}`))
+      .map(dish => ({
+        ...dish,
+        imagen: LOCAL_IMAGES[dish.nombre] || dish.imagen,
+      })),
   }))
   .filter(category => category.items.length > 0);
+
+const isCustomizableCategory = (categoryId: string, categoryNombre?: string) => {
+  const normId = categoryId.toLowerCase();
+  const normName = (categoryNombre || '').toLowerCase();
+  return (
+    normId.includes('hamburguesa') ||
+    normId.includes('filete') ||
+    normId.includes('chorizo') ||
+    normId.includes('hotdog') ||
+    normId.includes('salchipapa') ||
+    normName.includes('hamburguesa') ||
+    normName.includes('filete') ||
+    normName.includes('chorizo') ||
+    normName.includes('hot dog') ||
+    normName.includes('salchipapa')
+  );
+};
+
+const isDrinkOrAgregado = (nombre: string, categoriaId?: string) => {
+  const normCat = (categoriaId || '').toLowerCase();
+  const normName = nombre.toLowerCase().trim();
+
+  const drinkCatIds = [
+    'refrescantes', 'jugos', 'batidos', 'frappe', 'jarras',
+    'bebidas-heladas', 'bebidas-calientes', 'mojitos', 'cocteles', 'cervezas',
+  ];
+  if (drinkCatIds.some(id => normCat.includes(id))) return true;
+
+  if (
+    normCat.includes('bebida') || normCat.includes('jugo') ||
+    normCat.includes('batido') || normCat.includes('frapp') ||
+    normCat.includes('jarra') || normCat.includes('mojito') ||
+    normCat.includes('coctel') || normCat.includes('cóctel') ||
+    normCat.includes('cerveza')
+  ) return true;
+
+  if (
+    normName.includes('jugo') || normName.includes('iced tea') ||
+    normName.includes('iced coffee') || normName.includes('chocolate helado') ||
+    normName.includes('batido') || normName.includes('banana berry') ||
+    normName.includes('papaya energy') || normName.includes('banana fit') ||
+    normName.includes('frappe') || normName.includes('frapuccino') ||
+    normName.includes('jarra') || normName.includes('agua ') ||
+    normName.includes('gaseosa') || normName.startsWith('té') ||
+    normName.startsWith('te ') || normName.includes('manzanilla') ||
+    normName.includes('anís') || normName.includes('anis') ||
+    normName.includes('hierba luisa') || normName.includes('café') ||
+    normName.includes('cafe ') || normName.includes('emoliente') ||
+    normName.includes('chocolate caliente') || normName.includes('mojito') ||
+    normName.includes('pisco sour') || normName.includes('piña colada') ||
+    normName.includes('pina colada') || normName.includes('algarrobina') ||
+    normName.includes('laguna azul') || normName.includes('machu picchu') ||
+    normName.includes('daiquiri') || normName.includes('chilcano') ||
+    normName.includes('pink panther') || normName.includes('cusqueña') ||
+    normName.includes('cusquena') || normName.includes('pilsen') ||
+    normName.includes('corona') || normName.includes('leche adicional') ||
+    normName.includes('agregado')
+  ) {
+    return true;
+  }
+
+  return false;
+};
+
+const getItemDeliveryFee = (item: { nombre: string; categoriaId?: string }) => {
+  const normName = item.nombre.toLowerCase().trim();
+  // Trío de alitas cobra 2 soles
+  if (normName.includes('trío de alitas') || normName.includes('trio de alitas')) {
+    return 2;
+  }
+  // Bebidas y agregados no pagan
+  if (isDrinkOrAgregado(item.nombre, item.categoriaId)) {
+    return 0;
+  }
+  // Demás platos de comida cobran 1 sol
+  return 1;
+};
+
+const getDishUnitPrice = (precio: string) => {
+  const priceMatch = precio.match(/\d+(?:[.,]\d+)?/);
+  return Number.parseFloat((priceMatch?.[0] || '0').replace(',', '.')) || 0;
+};
 
 const fieldClass = 'w-full rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/30 focus:border-[#ff9d16] focus:bg-white/[0.09]';
 const fieldLabelClass = 'mb-1.5 ml-1 block text-[10px] font-black uppercase tracking-[0.15em] text-white/55';
@@ -62,6 +318,10 @@ export default function App() {
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
   const [reviewSuccess, setReviewSuccess] = useState(false);
   const [reviewData, setReviewData] = useState({ estrellasMozo: 0, estrellasComida: 0, comentario: '' });
+  const [configuringDish, setConfiguringDish] = useState<{ dish: Dish; category: Category } | null>(null);
+  const [selectedCremas, setSelectedCremas] = useState<string[]>(CREMAS_DISPONIBLES.map(c => c.nombre));
+  const [dishComment, setDishComment] = useState('');
+  const [dishQuantity, setDishQuantity] = useState(1);
 
   useEffect(() => {
     const loadData = async () => {
@@ -112,21 +372,90 @@ export default function App() {
   }, [showBirthdayPromo, loading]);
 
   const cartCount = useMemo(() => cart.reduce((total, item) => total + item.cantidad, 0), [cart]);
-  const calculateTotal = () => cart.reduce((total, item) => {
+  const calculateSubtotal = () => cart.reduce((total, item) => {
     const priceMatch = item.precio.match(/\d+(?:[.,]\d+)?/);
     const numericPrice = Number.parseFloat((priceMatch?.[0] || '0').replace(',', '.')) || 0;
     return total + numericPrice * item.cantidad;
   }, 0);
 
-  const addToCart = (dish: Dish) => setCart(current => {
-    const exists = current.find(item => item.nombre === dish.nombre && item.precio === dish.precio);
-    if (exists) return current.map(item => item.nombre === dish.nombre && item.precio === dish.precio ? { ...item, cantidad: item.cantidad + 1 } : item);
-    return [...current, { nombre: dish.nombre, precio: dish.precio, cantidad: 1 }];
+  const calculateDeliveryFee = () => cart.reduce((total, item) => {
+    return total + getItemDeliveryFee(item) * item.cantidad;
+  }, 0);
+
+  const calculateTotal = () => calculateSubtotal() + calculateDeliveryFee();
+
+  const handleDishClick = (dish: Dish, cat: Category) => {
+    if (isCustomizableCategory(cat.id, cat.nombre)) {
+      setConfiguringDish({ dish, category: cat });
+      setSelectedCremas(CREMAS_DISPONIBLES.map(c => c.nombre));
+      setDishComment('');
+      setDishQuantity(1);
+    } else {
+      addToCartDirect(dish, cat);
+    }
+  };
+
+  const addToCartDirect = (dish: Dish, cat?: Category) => setCart(current => {
+    const exists = current.find(item => item.nombre === dish.nombre && item.precio === dish.precio && !item.isCustomizable);
+    if (exists) return current.map(item => item.id === exists.id ? { ...item, cantidad: item.cantidad + 1 } : item);
+    return [...current, {
+      id: `${dish.nombre}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      nombre: dish.nombre,
+      precio: dish.precio,
+      cantidad: 1,
+      categoriaId: cat?.id,
+      isCustomizable: false,
+    }];
   });
 
-  const updateQuantity = (nombre: string, precio: string, delta: number) => setCart(current => current
+  const confirmConfiguredDish = () => {
+    if (!configuringDish) return;
+    const { dish } = configuringDish;
+    const sortedCremas = [...selectedCremas].sort();
+    const cleanComment = dishComment.trim();
+
+    setCart(current => {
+      const existing = current.find(item =>
+        item.nombre === dish.nombre &&
+        item.precio === dish.precio &&
+        item.isCustomizable &&
+        JSON.stringify(item.cremas?.slice().sort() || []) === JSON.stringify(sortedCremas) &&
+        (item.comentario || '') === cleanComment
+      );
+
+      if (existing) {
+        return current.map(item => item.id === existing.id ? { ...item, cantidad: item.cantidad + dishQuantity } : item);
+      }
+
+      return [
+        ...current,
+        {
+          id: `${dish.nombre}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+          nombre: dish.nombre,
+          precio: dish.precio,
+          cantidad: dishQuantity,
+          categoriaId: configuringDish.category.id,
+          cremas: sortedCremas,
+          comentario: cleanComment,
+          isCustomizable: true,
+        },
+      ];
+    });
+
+    setConfiguringDish(null);
+  };
+
+  const toggleCrema = (cremaNombre: string) => {
+    setSelectedCremas(current =>
+      current.includes(cremaNombre)
+        ? current.filter(c => c !== cremaNombre)
+        : [...current, cremaNombre]
+    );
+  };
+
+  const updateQuantity = (itemId: string, delta: number) => setCart(current => current
     .map(item => {
-      if (item.nombre !== nombre || item.precio !== precio) return item;
+      if (item.id !== itemId) return item;
       const cantidad = item.cantidad + delta;
       return cantidad > 0 ? { ...item, cantidad } : null;
     })
@@ -161,9 +490,30 @@ export default function App() {
 
   const sendToWhatsApp = (event: React.FormEvent) => {
     event.preventDefault();
+    const subtotal = calculateSubtotal();
+    const deliveryFee = calculateDeliveryFee();
+    const total = calculateTotal();
+
     let message = `🍔 *NUEVO PEDIDO — ${RESTAURANTE_NAME.toUpperCase()}*\n\n*Detalle del pedido*\n`;
-    cart.forEach(item => { message += `• ${item.cantidad} x ${item.nombre} — ${item.precio}\n`; });
-    message += `\n💰 *TOTAL: S/. ${calculateTotal().toFixed(2)}*\n\n`;
+    cart.forEach(item => {
+      message += `• ${item.cantidad} x ${item.nombre} — ${item.precio}\n`;
+      if (item.isCustomizable) {
+        if (item.cremas && item.cremas.length > 0) {
+          message += `   └ *Cremas:* ${item.cremas.join(', ')}\n`;
+        } else {
+          message += `   └ *Cremas:* Sin cremas\n`;
+        }
+        if (item.comentario && item.comentario.trim()) {
+          message += `   └ *Nota:* ${item.comentario.trim()}\n`;
+        }
+      }
+    });
+
+    message += `\n📋 *Subtotal productos:* S/. ${subtotal.toFixed(2)}\n`;
+    const concepto = orderType === 'delivery' ? 'Delivery / Empaque' : 'Empaque / Despacho';
+    message += `🛵 *${concepto}:* S/. ${deliveryFee.toFixed(2)}\n`;
+    message += `💰 *TOTAL A PAGAR: S/. ${total.toFixed(2)}*\n\n`;
+
     if (orderType === 'delivery') {
       message += `🛵 *Modalidad: Delivery*\n👤 Nombre: ${orderData.nombre.trim()}\n📱 Teléfono: ${orderData.telefono.trim()}\n🏠 Dirección: ${orderData.direccion.trim()}\n📍 Referencia: ${orderData.referencia.trim()}\n`;
       if (userLocation) {
@@ -269,7 +619,7 @@ export default function App() {
             <div className="mb-4 pt-6"><div className="mb-1 flex items-center gap-2 text-[#ff9d16]"><span className="text-[9px] font-black uppercase tracking-[0.25em]">{String(categoryIndex + 1).padStart(2, '0')} · Nuestra carta</span><span className="h-px flex-1 bg-gradient-to-r from-[#ff9d16]/55 to-transparent" /></div><div className="flex items-center gap-2"><Utensils size={20} className="wave-icon text-[#ff9d16]" /><h3 className="category-underline font-category text-[27px] font-bold leading-none text-white">{category.nombre}</h3></div></div>
             <div className="space-y-3">{category.items.map((dish, index) => (
               <motion.article key={`${dish.nombre}-${dish.precio}`} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-30px' }} transition={{ delay: Math.min(index * 0.025, 0.15) }} className="menu-dish-row relative flex min-h-[126px] overflow-hidden rounded-[1.35rem] border border-white/[0.09] bg-gradient-to-br from-[#1b1915] to-[#11100e] shadow-[0_14px_30px_rgba(0,0,0,.22)]">
-                <div className="flex min-w-0 flex-1 flex-col p-4 pr-2"><div className="flex items-start gap-2"><h4 className="font-dish text-[13px] font-black uppercase leading-[1.08] tracking-wide text-white">{dish.nombre}</h4><span className="mt-2.5 min-w-3 flex-1 border-t border-dotted border-[#ff9d16]/35" /></div>{dish.descripcion && <p className="mt-2 line-clamp-3 pr-1 text-[10px] leading-[1.35] text-white/52">{dish.descripcion}</p>}<div className="flex-1" /><div className="mt-3 flex items-center gap-2"><span className="rounded-lg bg-[#ff9d16] px-2.5 py-1 font-dish text-[12px] font-black text-[#1a0f05]">{dish.precio}</span><motion.button type="button" onClick={() => addToCart(dish)} whileTap={{ scale: 0.78 }} aria-label={`Agregar ${dish.nombre} al pedido`} className="flex h-8 w-8 items-center justify-center rounded-full border border-[#ff9d16]/40 bg-[#ff9d16]/10 text-[#ffab2e] transition hover:bg-[#ff9d16] hover:text-black"><Plus size={16} strokeWidth={3} /></motion.button></div></div>
+                <div className="flex min-w-0 flex-1 flex-col p-4 pr-2 cursor-pointer" onClick={() => handleDishClick(dish, category)}><div className="flex items-start gap-2"><h4 className="font-dish text-[13px] font-black uppercase leading-[1.08] tracking-wide text-white">{dish.nombre}</h4><span className="mt-2.5 min-w-3 flex-1 border-t border-dotted border-[#ff9d16]/35" /></div>{dish.descripcion && <p className="mt-2 line-clamp-3 pr-1 text-[10px] leading-[1.35] text-white/52">{dish.descripcion}</p>}<div className="flex-1" /><div className="mt-3 flex items-center gap-2"><span className="rounded-lg bg-[#ff9d16] px-2.5 py-1 font-dish text-[12px] font-black text-[#1a0f05]">{dish.precio}</span>{isCustomizableCategory(category.id, category.nombre) && <span className="rounded-md border border-[#ff9d16]/30 bg-[#ff9d16]/10 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider text-[#ffb13a]">Personalizar</span>}<motion.button type="button" onClick={(e) => { e.stopPropagation(); handleDishClick(dish, category); }} whileTap={{ scale: 0.78 }} aria-label={`Agregar ${dish.nombre} al pedido`} className="flex h-8 w-8 items-center justify-center rounded-full border border-[#ff9d16]/40 bg-[#ff9d16]/10 text-[#ffab2e] transition hover:bg-[#ff9d16] hover:text-black"><Plus size={16} strokeWidth={3} /></motion.button></div></div>
                 <button type="button" onClick={() => dish.imagen && setSelectedImage(dish.imagen)} className="dish-visual relative flex w-[33%] min-w-[108px] items-center justify-center overflow-hidden border-l border-[#ff9d16]/15" aria-label={dish.imagen ? `Ampliar imagen de ${dish.nombre}` : undefined}>
                   {dish.imagen ? <img src={dish.imagen} alt={dish.nombre} loading="lazy" className="h-full w-full object-cover transition duration-500 hover:scale-110" /> : <span className="relative flex flex-col items-center text-center"><span className="mb-2 flex h-10 w-10 items-center justify-center rounded-full border border-[#ff9d16]/25 bg-black/25 text-[#ff9d16]"><Utensils size={18} /></span><span className="text-[8px] font-black uppercase leading-snug tracking-[0.15em] text-[#ffc05c]/70">Preparado<br />al momento</span></span>}
                 </button>
@@ -313,12 +663,218 @@ export default function App() {
         <div className="modal-backdrop fixed inset-0 z-[60] flex items-end justify-center p-0 sm:p-4">
           <motion.div initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} transition={{ type: 'spring', damping: 28, stiffness: 260 }} className="modal-panel w-full max-w-md overflow-y-auto rounded-t-[2rem] border border-white/10 p-5 sm:rounded-[2rem]">
             <div className="mb-5 flex items-center justify-between"><div><p className="text-[9px] font-black uppercase tracking-[0.2em] text-[#ff9d16]">Revisa antes de continuar</p><h2 className="font-title text-[28px] text-white">Mi pedido</h2></div><button type="button" onClick={() => setShowSummary(false)} className="modal-close"><X size={19} /></button></div>
-            <div className="mb-5 max-h-[42vh] space-y-2.5 overflow-y-auto pr-1">{cart.map(item => <div key={`${item.nombre}-${item.precio}`} className="flex items-center gap-3 rounded-2xl border border-white/[0.07] bg-white/[0.045] p-3"><div className="min-w-0 flex-1"><h4 className="truncate font-dish text-xs font-black uppercase text-white">{item.nombre}</h4><p className="mt-0.5 text-[11px] font-black text-[#ff9d16]">{item.precio}</p></div><div className="flex items-center gap-2 rounded-xl border border-white/10 bg-black/25 px-2 py-1.5"><button type="button" onClick={() => updateQuantity(item.nombre, item.precio, -1)} className="text-white/55 hover:text-[#ff9d16]"><Minus size={15} /></button><span className="w-4 text-center text-xs font-black text-white">{item.cantidad}</span><button type="button" onClick={() => updateQuantity(item.nombre, item.precio, 1)} className="text-[#ff9d16]"><Plus size={15} /></button></div><button type="button" onClick={() => updateQuantity(item.nombre, item.precio, -item.cantidad)} className="p-1 text-red-400/60 hover:text-red-400" aria-label={`Eliminar ${item.nombre}`}><Trash2 size={17} /></button></div>)}</div>
-            <div className="mb-5 flex items-center justify-between border-y border-dashed border-white/10 py-4"><span className="text-sm font-bold text-white/60">Total a pagar</span><span className="font-dish text-2xl font-black text-[#ff9d16]">S/. {calculateTotal().toFixed(2)}</span></div>
+            <div className="mb-5 max-h-[42vh] space-y-2.5 overflow-y-auto pr-1">
+              {cart.map(item => (
+                <div key={item.id} className="rounded-2xl border border-white/[0.07] bg-white/[0.045] p-3 space-y-2">
+                  <div className="flex items-center gap-3">
+                    <div className="min-w-0 flex-1">
+                      <h4 className="truncate font-dish text-xs font-black uppercase text-white">{item.nombre}</h4>
+                      <p className="mt-0.5 text-[11px] font-black text-[#ff9d16]">{item.precio}</p>
+                    </div>
+                    <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-black/25 px-2 py-1.5">
+                      <button type="button" onClick={() => updateQuantity(item.id, -1)} className="text-white/55 hover:text-[#ff9d16]"><Minus size={15} /></button>
+                      <span className="w-4 text-center text-xs font-black text-white">{item.cantidad}</span>
+                      <button type="button" onClick={() => updateQuantity(item.id, 1)} className="text-[#ff9d16]"><Plus size={15} /></button>
+                    </div>
+                    <button type="button" onClick={() => updateQuantity(item.id, -item.cantidad)} className="p-1 text-red-400/60 hover:text-red-400" aria-label={`Eliminar ${item.nombre}`}><Trash2 size={17} /></button>
+                  </div>
+                  {item.isCustomizable && (
+                    <div className="rounded-xl border border-white/[0.06] bg-black/35 p-2 text-[10px] space-y-1">
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <span className="font-bold uppercase tracking-wider text-[#ff9d16]">Cremas:</span>
+                        {item.cremas && item.cremas.length > 0 ? (
+                          <span className="text-white/85">{item.cremas.join(', ')}</span>
+                        ) : (
+                          <span className="italic text-white/40">Sin cremas</span>
+                        )}
+                      </div>
+                      {item.comentario && (
+                        <div className="flex items-start gap-1 text-white/75">
+                          <span className="font-bold text-orange-200/60">Nota:</span>
+                          <span className="italic text-white/80">“{item.comentario}”</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+            <div className="mb-5 space-y-2 border-y border-dashed border-white/10 py-4 text-xs">
+              <div className="flex items-center justify-between text-white/65">
+                <span>Subtotal platos</span>
+                <span className="font-dish font-bold text-white">S/. {calculateSubtotal().toFixed(2)}</span>
+              </div>
+              <div className="flex items-center justify-between text-white/65">
+                <span className="flex items-center gap-1.5">
+                  <Bike size={14} className="text-[#ff9d16]" />
+                  <span>Costo de delivery / empaque</span>
+                </span>
+                <span className="font-dish font-bold text-[#ffad26]">
+                  {calculateDeliveryFee() > 0 ? `+ S/. ${calculateDeliveryFee().toFixed(2)}` : 'S/. 0.00'}
+                </span>
+              </div>
+              <div className="flex items-center justify-between border-t border-white/[0.08] pt-2.5 text-sm">
+                <span className="font-bold text-white">Total a pagar</span>
+                <span className="font-dish text-2xl font-black text-[#ff9d16]">S/. {calculateTotal().toFixed(2)}</span>
+              </div>
+              <p className="text-[9px] leading-snug text-white/40">
+                * Costo de S/. 2.00 por Trío de alitas y S/. 1.00 por plato de comida (aplica para delivery y recojo). Bebidas y agregados no pagan costo adicional.
+              </p>
+            </div>
             <button type="button" onClick={() => { setShowSummary(false); setShowCheckout(true); }} className="brand-button w-full py-4">Elegir entrega y enviar <ChevronRight size={19} /></button>
           </motion.div>
         </div>
       )}</AnimatePresence>
+
+      {/* Modal de configuración de pedido para platos personalizables */}
+      <AnimatePresence>
+        {configuringDish && (
+          <div className="modal-backdrop fixed inset-0 z-[65] flex items-end justify-center p-0 sm:items-center sm:p-4">
+            <motion.div
+              initial={{ y: '100%', opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: '100%', opacity: 0 }}
+              transition={{ type: 'spring', damping: 28, stiffness: 260 }}
+              className="modal-panel max-h-[92vh] w-full max-w-md overflow-y-auto rounded-t-[2rem] border border-[#ff9d16]/30 p-5 shadow-2xl sm:rounded-[2rem]"
+            >
+              <div className="mb-4 flex items-center justify-between border-b border-white/[0.08] pb-3">
+                <div className="min-w-0 pr-3">
+                  <div className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-[0.2em] text-[#ff9d16]">
+                    <SlidersHorizontal size={13} />
+                    <span>Configurar pedido</span>
+                  </div>
+                  <h2 className="truncate font-title text-2xl text-white sm:text-[26px]">
+                    {configuringDish.dish.nombre}
+                  </h2>
+                  <span className="font-dish text-sm font-black text-[#ffad26]">
+                    {configuringDish.dish.precio} c/u
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setConfiguringDish(null)}
+                  className="modal-close"
+                  aria-label="Cerrar personalización"
+                >
+                  <X size={19} />
+                </button>
+              </div>
+
+              {/* Cremas */}
+              <div className="mb-5">
+                <div className="mb-2.5 flex items-center justify-between">
+                  <div>
+                    <label className="block text-[11px] font-black uppercase tracking-[0.14em] text-white/85">
+                      Elige tus cremas
+                    </label>
+                    <span className="text-[9px] font-semibold text-white/45">
+                      {selectedCremas.length === 0
+                        ? 'Sin cremas seleccionadas'
+                        : `${selectedCremas.length} de ${CREMAS_DISPONIBLES.length} seleccionadas`}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedCremas(CREMAS_DISPONIBLES.map(c => c.nombre))}
+                      className={`crema-quick-btn ${selectedCremas.length === CREMAS_DISPONIBLES.length ? 'active' : ''}`}
+                    >
+                      Todas
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedCremas([])}
+                      className={`crema-quick-btn ${selectedCremas.length === 0 ? 'active' : ''}`}
+                    >
+                      Ninguna
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  {CREMAS_DISPONIBLES.map(crema => {
+                    const isSelected = selectedCremas.includes(crema.nombre);
+                    return (
+                      <button
+                        key={crema.id}
+                        type="button"
+                        onClick={() => toggleCrema(crema.nombre)}
+                        className={`crema-chip ${isSelected ? 'selected' : ''}`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="text-base">{crema.emoji}</span>
+                          <span className="text-xs font-bold">{crema.nombre}</span>
+                        </div>
+                        <div
+                          className={`flex h-5 w-5 items-center justify-center rounded-full border transition ${
+                            isSelected
+                              ? 'border-[#ff9d16] bg-[#ff9d16] text-[#130d07]'
+                              : 'border-white/20 bg-white/[0.04] text-transparent'
+                          }`}
+                        >
+                          <Check size={13} strokeWidth={3.5} />
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Comentarios / Indicaciones */}
+              <div className="mb-5">
+                <label className="mb-1.5 block text-[11px] font-black uppercase tracking-[0.14em] text-white/85" htmlFor="dish-comment">
+                  Comentarios o indicaciones especiales
+                </label>
+                <textarea
+                  id="dish-comment"
+                  rows={2}
+                  value={dishComment}
+                  onChange={e => setDishComment(e.target.value)}
+                  placeholder="Ej. Sin cebolla, cremas aparte, papas bien doradas..."
+                  className={`${fieldClass} resize-none text-xs`}
+                />
+              </div>
+
+              {/* Cantidad y botón de agregar */}
+              <div className="flex items-center gap-3 border-t border-white/[0.08] pt-4">
+                <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-black/40 px-3 py-2">
+                  <button
+                    type="button"
+                    onClick={() => setDishQuantity(q => Math.max(1, q - 1))}
+                    disabled={dishQuantity <= 1}
+                    className="p-1 text-white/60 hover:text-[#ff9d16] disabled:opacity-30"
+                    aria-label="Disminuir cantidad"
+                  >
+                    <Minus size={16} />
+                  </button>
+                  <span className="w-5 text-center font-dish text-sm font-black text-white">
+                    {dishQuantity}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setDishQuantity(q => q + 1)}
+                    className="p-1 text-[#ff9d16] hover:scale-110"
+                    aria-label="Aumentar cantidad"
+                  >
+                    <Plus size={16} />
+                  </button>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={confirmConfiguredDish}
+                  className="brand-button flex-1 py-3.5 text-xs font-black"
+                >
+                  <span>Agregar al pedido</span>
+                  <span className="rounded-lg bg-black/20 px-2 py-0.5 text-[11px]">
+                    S/. {(getDishUnitPrice(configuringDish.dish.precio) * dishQuantity).toFixed(2)}
+                  </span>
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>{showCheckout && (
         <div className="modal-backdrop fixed inset-0 z-[70] flex items-end justify-center p-0 sm:items-center sm:p-4">
@@ -333,6 +889,20 @@ export default function App() {
                 <div><label className={fieldLabelClass} htmlFor="order-reference">Referencia de la dirección</label><textarea id="order-reference" required rows={2} value={orderData.referencia} onChange={event => setOrderData({ ...orderData, referencia: event.target.value })} className={`${fieldClass} resize-none`} placeholder="Ej. Frente al parque, portón negro" /></div>
                 <div className="rounded-2xl border border-[#ff9d16]/20 bg-[#ff9d16]/[0.06] p-3"><button type="button" onClick={requestLocation} disabled={locationLoading} className={`location-button ${userLocation ? 'location-ready' : ''}`}>{locationLoading ? <Loader2 size={19} className="animate-spin" /> : userLocation ? <CheckCircle2 size={19} /> : <Navigation size={19} />}<span>{locationLoading ? 'Obteniendo ubicación...' : userLocation ? 'Ubicación lista para compartir' : 'Compartir mi ubicación actual'}</span></button><p className="mt-2 flex gap-2 text-[9px] leading-relaxed text-orange-100/55"><MapPin size={13} className="mt-0.5 shrink-0 text-[#ff9d16]" />Al pulsar, permite el acceso y activa “ubicación precisa”. Se añadirá un enlace de Google Maps al mensaje de WhatsApp para ubicarte correctamente.</p>{userLocation && <p className="mt-2 text-[9px] font-bold text-emerald-400">Ubicación capturada · precisión aproximada de {Math.round(userLocation.accuracy)} m</p>}{locationError && <p className="mt-2 text-[9px] font-bold text-red-300">{locationError}</p>}</div>
               </> : <div><label className={fieldLabelClass} htmlFor="pickup-name">Nombre de quien recogerá</label><input id="pickup-name" required value={orderData.nombreRecojo} onChange={event => setOrderData({ ...orderData, nombreRecojo: event.target.value })} className={fieldClass} placeholder="Ej. María Pérez" /><div className="pickup-store-card"><div className="flex items-start gap-3"><MapPin size={18} className="mt-0.5 shrink-0 text-[#ff9d16]" /><div><p className="text-[9px] font-black uppercase tracking-[0.16em] text-[#ff9d16]">Dirección de recojo</p><p className="mt-1 text-[10px] font-semibold leading-relaxed text-white/75">{STORE_ADDRESS}</p></div></div><div className="mt-3 flex items-center gap-3 border-t border-white/[0.08] pt-3"><Clock3 size={18} className="shrink-0 text-[#ff9d16]" /><div><p className="text-[9px] font-black uppercase tracking-[0.16em] text-[#ff9d16]">Horario</p><p className="mt-0.5 text-[10px] font-semibold text-white/75">{STORE_HOURS}</p></div></div><a href={MAPS_URL} target="_blank" rel="noopener noreferrer" className="pickup-map-button"><span>Abrir ubicación en Google Maps</span><ChevronRight size={16} /></a></div></div>}
+              <div className="rounded-2xl border border-white/[0.08] bg-white/[0.035] p-3.5 space-y-1.5 text-xs">
+                <div className="flex items-center justify-between text-white/60">
+                  <span>Subtotal platos:</span>
+                  <span className="font-dish font-bold text-white">S/. {calculateSubtotal().toFixed(2)}</span>
+                </div>
+                <div className="flex items-center justify-between text-white/60">
+                  <span>{orderType === 'delivery' ? '🛵 Costo de delivery / empaque:' : '🏪 Costo de empaque / despacho:'}</span>
+                  <span className="font-dish font-bold text-[#ffad26]">+ S/. {calculateDeliveryFee().toFixed(2)}</span>
+                </div>
+                <div className="flex items-center justify-between border-t border-white/[0.08] pt-2 text-sm">
+                  <span className="font-bold text-white">Total a pagar:</span>
+                  <span className="font-dish text-lg font-black text-[#ff9d16]">S/. {calculateTotal().toFixed(2)}</span>
+                </div>
+              </div>
               <button type="submit" className="whatsapp-button mt-2 w-full"><span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20"><ChevronRight size={19} /></span><span className="text-left"><small className="block text-[8px] font-black uppercase tracking-[0.16em] text-white/65">Todo listo</small>Enviar pedido por WhatsApp</span></button>
             </form>
           </motion.div>
