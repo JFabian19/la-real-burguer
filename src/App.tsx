@@ -759,10 +759,33 @@ export default function App() {
         </motion.button>
       </div>
 
-      <div className="relative z-10 px-4 pb-3 pt-4">
+      <div className="relative z-10 px-4 pb-2 pt-4">
         <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} className="hero-card relative aspect-[1.78/1] overflow-hidden rounded-[1.75rem] border border-[#ff9d16]/35 shadow-[0_24px_55px_rgba(0,0,0,.5)]">
           <img src={BANNER_PATH} alt="Hamburguesa de La Real Burger" className="h-full w-full object-cover" />
         </motion.div>
+      </div>
+
+      <div className="relative z-10 px-4 pb-3">
+        <div className="grid grid-cols-2 gap-2">
+          <motion.a
+            href={INSTAGRAM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            whileTap={{ scale: 0.96 }}
+            className="social-button social-instagram"
+          >
+            <Instagram size={18} /> Instagram
+          </motion.a>
+          <motion.a
+            href={FACEBOOK_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            whileTap={{ scale: 0.96 }}
+            className="social-button social-facebook"
+          >
+            <Facebook size={18} /> Facebook
+          </motion.a>
+        </div>
       </div>
 
       <nav className="sticky top-[73px] z-40 border-y border-white/[0.06] bg-[#0b0a08]/92 px-4 py-3 backdrop-blur-xl" aria-label="Categorías del menú">
