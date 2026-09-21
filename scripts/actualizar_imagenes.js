@@ -125,6 +125,13 @@ const DISH_QUERY_OVERRIDES = {
   'Chorizo Royal': 'chorizo royal sandwich huevo queso',
   'Filete clásico': 'sandwich filete de pollo clasico',
   'Filete con todo': 'sandwich filete de pollo royal huevo queso',
+
+  // Guarniciones
+  'Porción de arroz blanco': 'porcion arroz blanco cocido plato',
+  'Porción de arroz chaufa': 'porcion arroz chaufa casero plato',
+  'Porción de papas personal': 'porcion papas fritas crocantes restaurante',
+  '1/2 porción de papas': 'fuente papas fritas doradas porcion',
+  '1 porción de papas familiar': 'fuente familiar grande papas fritas banquete',
 };
 
 // 3. Construir la consulta de búsqueda más precisa

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   Bike, Check, CheckCircle2, ChevronRight, Clock3, Facebook, Gift, Instagram, Loader2, MapPin, Minus,
-  Navigation, Phone, Plus, ShoppingBag, SlidersHorizontal, Star, Store, Trash2,
+  Navigation, Phone, Plus, ShoppingBag, SlidersHorizontal, Sparkles, Star, Store, Trash2,
   UserRound, Utensils, X,
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
@@ -10,7 +10,8 @@ import { fetchSheetData, SheetCategory, SheetDish, SHEET_ID, submitSheetData } f
 
 const RESTAURANTE_NAME = 'La Real Burger';
 const RESTAURANTE_SLOGAN = 'Sabor real, momentos inolvidables';
-const WHATSAPP_NUMBER = '51942055475';
+const WHATSAPP_NUMBER = '51914795450';
+const STORE_PHONE_DISPLAY = '914 795 450';
 const STORE_ADDRESS = 'Asoc. San Francisco, calle Los Álamos, Mz. 05, Lt. 10, 02002 Coronel Gregorio Albarracín Lanchipa, Perú';
 const STORE_HOURS = 'Lunes a sábado · 9:00 a. m. – 6:00 p. m.';
 const MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(STORE_ADDRESS)}`;
@@ -170,6 +171,11 @@ const LOCAL_IMAGES: Record<string, string> = {
   'Cusqueña Negra': '/assets/platos/cusquena-negra.webp',
   'Pilsen': '/assets/platos/pilsen.webp',
   'Corona': '/assets/platos/corona.webp',
+  'Porción de arroz blanco': '/assets/platos/porcion-de-arroz-blanco.webp',
+  'Porción de arroz chaufa': '/assets/platos/porcion-de-arroz-chaufa.webp',
+  'Porción de papas personal': '/assets/platos/porcion-de-papas-personal.webp',
+  '1/2 porción de papas': '/assets/platos/1-2-porcion-de-papas.webp',
+  '1 porción de papas familiar': '/assets/platos/1-porcion-de-papas-familiar.webp',
 };
 
 interface Dish { nombre: string; descripcion?: string; imagen?: string; precio: string; }
@@ -181,6 +187,7 @@ interface CartItem {
   cantidad: number;
   categoriaId?: string;
   cremas?: string[];
+  sabores?: string[];
   comentario?: string;
   isCustomizable?: boolean;
 }
@@ -196,6 +203,26 @@ const CREMAS_DISPONIBLES = [
   { id: 'mayonesa', nombre: 'Mayonesa', emoji: '⚪' },
   { id: 'aceituna', nombre: 'Aceituna', emoji: '🫒' },
 ];
+
+const ALITAS_SABORES = [
+  { id: 'bbq', nombre: 'BBQ', emoji: '🍖' },
+  { id: 'bufalo', nombre: 'Búfalo', emoji: '🔥' },
+  { id: 'broaster', nombre: 'Broaster', emoji: '🍗' },
+  { id: 'hot-wings', nombre: 'Hot Wings', emoji: '🌶️' },
+  { id: 'acevichada', nombre: 'Acevichada', emoji: '🍋' },
+  { id: 'maracuya', nombre: 'Maracuyá', emoji: '🍯' },
+  { id: 'anticucheras', nombre: 'Anticucheras', emoji: '🍢' },
+  { id: 'teriyaki', nombre: 'Teriyaki', emoji: '🥢' },
+  { id: 'honey-mustard', nombre: 'Honey Mustard', emoji: '🟡' },
+];
+
+const getMaxAlitasFlavors = (dishName: string): number => {
+  const norm = dishName.toLowerCase().trim();
+  if (norm.includes('duo alitas') || norm.includes('dúo alitas')) return 2;
+  if (norm.includes('trío de alitas') || norm.includes('trio de alitas') || norm.includes('trio alitas')) return 3;
+  if (norm.includes('alitas familiar')) return 4;
+  return 0;
+};
 
 const isExcludedCategory = (value: string) => /waffle|gofre|^s[aá]nguches?$/i.test(value.trim());
 const isWaffleRelated = (value: string) => /waffle|gofre/i.test(value);
@@ -232,6 +259,20 @@ const isCustomizableCategory = (categoryId: string, categoryNombre?: string) => 
 const isDrinkOrAgregado = (nombre: string, categoriaId?: string) => {
   const normCat = (categoriaId || '').toLowerCase();
   const normName = nombre.toLowerCase().trim();
+
+  // Guarniciones no son platos principales, no pagan táper
+  if (
+    normCat.includes('guarnicion') || normCat.includes('guarnición') ||
+    normName === 'porción de arroz blanco' || normName === 'porcion de arroz blanco' ||
+    normName === 'porción de arroz chaufa' || normName === 'porcion de arroz chaufa' ||
+    normName === 'porción de papas personal' || normName === 'porcion de papas personal' ||
+    normName === '1/2 porción de papas' || normName === '1/2 porcion de papas' ||
+    normName === '1 porción de papas familiar' || normName === '1 porcion de papas familiar' ||
+    normName === '1 poción de papas familiar' || normName === '1 pocion de papas familiar' ||
+    normName.startsWith('porción de') || normName.startsWith('porcion de')
+  ) {
+    return true;
+  }
 
   const drinkCatIds = [
     'refrescantes', 'jugos', 'batidos', 'frappe', 'jarras',
@@ -277,15 +318,65 @@ const isDrinkOrAgregado = (nombre: string, categoriaId?: string) => {
 
 const getItemDeliveryFee = (item: { nombre: string; categoriaId?: string }) => {
   const normName = item.nombre.toLowerCase().trim();
-  // Trío de alitas cobra 2 soles
-  if (normName.includes('trío de alitas') || normName.includes('trio de alitas')) {
+  const normCat = (item.categoriaId || '').toLowerCase().trim();
+
+  // 1. Reglas específicas de S/. 2.00 de táper:
+  // - Trío de alitas y Alitas familiar
+  if (
+    normName.includes('trío de alitas') ||
+    normName.includes('trio de alitas') ||
+    normName.includes('trio alitas') ||
+    normName.includes('alitas familiar')
+  ) {
     return 2;
   }
-  // Bebidas y agregados no pagan
+  // - Broaster: Combo 2 y Combo 3
+  if (
+    normName.includes('combo broaster 2') ||
+    normName.includes('combo 2') ||
+    normName.includes('combo broaster 3') ||
+    normName.includes('combo 3')
+  ) {
+    return 2;
+  }
+
+  // 2. Bebidas y guarniciones / agregados no pagan táper (S/. 0.00)
   if (isDrinkOrAgregado(item.nombre, item.categoriaId)) {
     return 0;
   }
-  // Demás platos de comida cobran 1 sol
+
+  // 3. Reglas de S/. 1.00 de táper:
+  // - En categoría Alitas: individuales y Duo alitas (1 sol)
+  if (normCat.includes('alitas') || normName.includes('alitas') || normName.includes('duo alitas') || normName.includes('dúo alitas')) {
+    return 1;
+  }
+  // - En categoría Salchipapas: todas pagan 1 sol de táper
+  if (
+    normCat.includes('salchipapa') ||
+    normName.includes('salchipapa') ||
+    normName.includes('salchi') ||
+    normName.includes('chori papa') ||
+    normName.includes('chicken crispy') ||
+    normName.includes('camionero')
+  ) {
+    return 1;
+  }
+  // - En categoría Broaster: Mostrito y Combo 1 pagan 1 sol de táper
+  if (normName.includes('mostrito') || normName.includes('combo broaster 1') || normName.includes('combo 1')) {
+    return 1;
+  }
+  // - En categoría Criollos: todos pagan 1 sol de táper
+  if (
+    normCat.includes('criollo') ||
+    normCat.includes('especial') ||
+    normName.includes('lomo saltado') ||
+    normName.includes('pollo saltado') ||
+    normName.includes('pollo a la plancha') ||
+    (normName.includes('chaufa') && !normName.includes('porción') && !normName.includes('porcion'))
+  ) {
+    return 1;
+  }
+  // - Demás platos de comida: Hamburguesas, Filetes, Chorizos/Hot dogs, Tequeños (1 sol)
   return 1;
 };
 
@@ -322,6 +413,10 @@ export default function App() {
   const [selectedCremas, setSelectedCremas] = useState<string[]>(CREMAS_DISPONIBLES.map(c => c.nombre));
   const [dishComment, setDishComment] = useState('');
   const [dishQuantity, setDishQuantity] = useState(1);
+  const [configuringAlitas, setConfiguringAlitas] = useState<{ dish: Dish; category: Category; maxFlavors: number } | null>(null);
+  const [selectedSabores, setSelectedSabores] = useState<string[]>([]);
+  const [alitasComment, setAlitasComment] = useState('');
+  const [alitasQuantity, setAlitasQuantity] = useState(1);
 
   useEffect(() => {
     const loadData = async () => {
@@ -385,7 +480,13 @@ export default function App() {
   const calculateTotal = () => calculateSubtotal() + calculateDeliveryFee();
 
   const handleDishClick = (dish: Dish, cat: Category) => {
-    if (isCustomizableCategory(cat.id, cat.nombre)) {
+    const maxFlavors = getMaxAlitasFlavors(dish.nombre);
+    if (maxFlavors > 0) {
+      setConfiguringAlitas({ dish, category: cat, maxFlavors });
+      setSelectedSabores([]);
+      setAlitasComment('');
+      setAlitasQuantity(1);
+    } else if (isCustomizableCategory(cat.id, cat.nombre)) {
       setConfiguringDish({ dish, category: cat });
       setSelectedCremas(CREMAS_DISPONIBLES.map(c => c.nombre));
       setDishComment('');
@@ -393,6 +494,44 @@ export default function App() {
     } else {
       addToCartDirect(dish, cat);
     }
+  };
+
+  const confirmConfiguredAlitas = () => {
+    if (!configuringAlitas) return;
+    if (selectedSabores.length !== configuringAlitas.maxFlavors) return;
+    const { dish } = configuringAlitas;
+    const sortedSabores = [...selectedSabores];
+    const cleanComment = alitasComment.trim();
+
+    setCart(current => {
+      const existing = current.find(item =>
+        item.nombre === dish.nombre &&
+        item.precio === dish.precio &&
+        item.isCustomizable &&
+        JSON.stringify(item.sabores?.slice().sort() || []) === JSON.stringify(sortedSabores.slice().sort()) &&
+        (item.comentario || '') === cleanComment
+      );
+
+      if (existing) {
+        return current.map(item => item.id === existing.id ? { ...item, cantidad: item.cantidad + alitasQuantity } : item);
+      }
+
+      return [
+        ...current,
+        {
+          id: `${dish.nombre}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+          nombre: dish.nombre,
+          precio: dish.precio,
+          cantidad: alitasQuantity,
+          categoriaId: configuringAlitas.category.id,
+          sabores: sortedSabores,
+          comentario: cleanComment,
+          isCustomizable: true,
+        },
+      ];
+    });
+
+    setConfiguringAlitas(null);
   };
 
   const addToCartDirect = (dish: Dish, cat?: Category) => setCart(current => {
@@ -453,6 +592,19 @@ export default function App() {
     );
   };
 
+  const toggleSabor = (saborNombre: string) => {
+    if (!configuringAlitas) return;
+    setSelectedSabores(current => {
+      if (current.includes(saborNombre)) {
+        return current.filter(s => s !== saborNombre);
+      }
+      if (current.length >= configuringAlitas.maxFlavors) {
+        return current;
+      }
+      return [...current, saborNombre];
+    });
+  };
+
   const updateQuantity = (itemId: string, delta: number) => setCart(current => current
     .map(item => {
       if (item.id !== itemId) return item;
@@ -498,10 +650,15 @@ export default function App() {
     cart.forEach(item => {
       message += `• ${item.cantidad} x ${item.nombre} — ${item.precio}\n`;
       if (item.isCustomizable) {
-        if (item.cremas && item.cremas.length > 0) {
-          message += `   └ *Cremas:* ${item.cremas.join(', ')}\n`;
-        } else {
-          message += `   └ *Cremas:* Sin cremas\n`;
+        if (item.sabores && item.sabores.length > 0) {
+          message += `   └ *Sabores:* ${item.sabores.join(', ')}\n`;
+        }
+        if (item.cremas) {
+          if (item.cremas.length > 0) {
+            message += `   └ *Cremas:* ${item.cremas.join(', ')}\n`;
+          } else {
+            message += `   └ *Cremas:* Sin cremas\n`;
+          }
         }
         if (item.comentario && item.comentario.trim()) {
           message += `   └ *Nota:* ${item.comentario.trim()}\n`;
@@ -510,8 +667,8 @@ export default function App() {
     });
 
     message += `\n📋 *Subtotal productos:* S/. ${subtotal.toFixed(2)}\n`;
-    const concepto = orderType === 'delivery' ? 'Delivery / Empaque' : 'Empaque / Despacho';
-    message += `🛵 *${concepto}:* S/. ${deliveryFee.toFixed(2)}\n`;
+    const concepto = orderType === 'delivery' ? 'Táper / Empaque delivery' : 'Táper para llevar';
+    message += `📦 *${concepto}:* S/. ${deliveryFee.toFixed(2)}\n`;
     message += `💰 *TOTAL A PAGAR: S/. ${total.toFixed(2)}*\n\n`;
 
     if (orderType === 'delivery') {
@@ -616,10 +773,46 @@ export default function App() {
       <main className="relative z-10 flex-1 px-4 pb-36">
         {categories.map((category, categoryIndex) => (
           <section key={category.id} id={`cat-${category.id}`} className="mb-11 scroll-mt-32">
-            <div className="mb-4 pt-6"><div className="mb-1 flex items-center gap-2 text-[#ff9d16]"><span className="text-[9px] font-black uppercase tracking-[0.25em]">{String(categoryIndex + 1).padStart(2, '0')} · Nuestra carta</span><span className="h-px flex-1 bg-gradient-to-r from-[#ff9d16]/55 to-transparent" /></div><div className="flex items-center gap-2"><Utensils size={20} className="wave-icon text-[#ff9d16]" /><h3 className="category-underline font-category text-[27px] font-bold leading-none text-white">{category.nombre}</h3></div></div>
+            <div className="mb-4 pt-6">
+              <div className="mb-1 flex items-center gap-2 text-[#ff9d16]">
+                <span className="text-[9px] font-black uppercase tracking-[0.25em]">{String(categoryIndex + 1).padStart(2, '0')} · Nuestra carta</span>
+                <span className="h-px flex-1 bg-gradient-to-r from-[#ff9d16]/55 to-transparent" />
+              </div>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <Utensils size={20} className="wave-icon text-[#ff9d16]" />
+                  <h3 className="category-underline font-category text-[27px] font-bold leading-none text-white">{category.nombre}</h3>
+                </div>
+                {category.id === 'alitas' && (
+                  <span className="rounded-full border border-[#ff9d16]/30 bg-[#ff9d16]/10 px-2.5 py-1 text-[9px] font-black uppercase tracking-wider text-[#ffad26]">
+                    📦 Táper S/. 1.00 · Trío S/. 2.00
+                  </span>
+                )}
+                {category.id === 'salchipapas' && (
+                  <span className="rounded-full border border-[#ff9d16]/30 bg-[#ff9d16]/10 px-2.5 py-1 text-[9px] font-black uppercase tracking-wider text-[#ffad26]">
+                    📦 Táper S/. 1.00
+                  </span>
+                )}
+                {category.id === 'broaster' && (
+                  <span className="rounded-full border border-[#ff9d16]/30 bg-[#ff9d16]/10 px-2.5 py-1 text-[9px] font-black uppercase tracking-wider text-[#ffad26]">
+                    📦 Táper S/. 1.00 / S/. 2.00
+                  </span>
+                )}
+                {(category.id === 'criollos' || category.id === 'especiales') && (
+                  <span className="rounded-full border border-[#ff9d16]/30 bg-[#ff9d16]/10 px-2.5 py-1 text-[9px] font-black uppercase tracking-wider text-[#ffad26]">
+                    📦 Táper S/. 1.00
+                  </span>
+                )}
+                {category.id === 'guarniciones' && (
+                  <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[9px] font-black uppercase tracking-wider text-emerald-400">
+                    Sin costo de táper
+                  </span>
+                )}
+              </div>
+            </div>
             <div className="space-y-3">{category.items.map((dish, index) => (
               <motion.article key={`${dish.nombre}-${dish.precio}`} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-30px' }} transition={{ delay: Math.min(index * 0.025, 0.15) }} className="menu-dish-row relative flex min-h-[126px] overflow-hidden rounded-[1.35rem] border border-white/[0.09] bg-gradient-to-br from-[#1b1915] to-[#11100e] shadow-[0_14px_30px_rgba(0,0,0,.22)]">
-                <div className="flex min-w-0 flex-1 flex-col p-4 pr-2 cursor-pointer" onClick={() => handleDishClick(dish, category)}><div className="flex items-start gap-2"><h4 className="font-dish text-[13px] font-black uppercase leading-[1.08] tracking-wide text-white">{dish.nombre}</h4><span className="mt-2.5 min-w-3 flex-1 border-t border-dotted border-[#ff9d16]/35" /></div>{dish.descripcion && <p className="mt-2 line-clamp-3 pr-1 text-[10px] leading-[1.35] text-white/52">{dish.descripcion}</p>}<div className="flex-1" /><div className="mt-3 flex items-center gap-2"><span className="rounded-lg bg-[#ff9d16] px-2.5 py-1 font-dish text-[12px] font-black text-[#1a0f05]">{dish.precio}</span>{isCustomizableCategory(category.id, category.nombre) && <span className="rounded-md border border-[#ff9d16]/30 bg-[#ff9d16]/10 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider text-[#ffb13a]">Personalizar</span>}<motion.button type="button" onClick={(e) => { e.stopPropagation(); handleDishClick(dish, category); }} whileTap={{ scale: 0.78 }} aria-label={`Agregar ${dish.nombre} al pedido`} className="flex h-8 w-8 items-center justify-center rounded-full border border-[#ff9d16]/40 bg-[#ff9d16]/10 text-[#ffab2e] transition hover:bg-[#ff9d16] hover:text-black"><Plus size={16} strokeWidth={3} /></motion.button></div></div>
+                <div className="flex min-w-0 flex-1 flex-col p-4 pr-2 cursor-pointer" onClick={() => handleDishClick(dish, category)}><div className="flex items-start gap-2"><h4 className="font-dish text-[13px] font-black uppercase leading-[1.08] tracking-wide text-white">{dish.nombre}</h4><span className="mt-2.5 min-w-3 flex-1 border-t border-dotted border-[#ff9d16]/35" /></div>{dish.descripcion && <p className="mt-2 line-clamp-3 pr-1 text-[10px] leading-[1.35] text-white/52">{dish.descripcion}</p>}<div className="flex-1" /><div className="mt-3 flex flex-wrap items-center gap-2"><span className="rounded-lg bg-[#ff9d16] px-2.5 py-1 font-dish text-[12px] font-black text-[#1a0f05]">{dish.precio}</span>{getMaxAlitasFlavors(dish.nombre) > 0 ? <span className="rounded-md border border-[#ff9d16]/30 bg-[#ff9d16]/10 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider text-[#ffb13a]">{getMaxAlitasFlavors(dish.nombre)} Sabores</span> : isCustomizableCategory(category.id, category.nombre) ? <span className="rounded-md border border-[#ff9d16]/30 bg-[#ff9d16]/10 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider text-[#ffb13a]">Cremas</span> : null}{getItemDeliveryFee({ nombre: dish.nombre, categoriaId: category.id }) > 0 && <span className="rounded-md border border-white/10 bg-white/5 px-1.5 py-0.5 text-[8px] font-bold text-white/70">📦 Táper S/. {getItemDeliveryFee({ nombre: dish.nombre, categoriaId: category.id })}</span>}<motion.button type="button" onClick={(e) => { e.stopPropagation(); handleDishClick(dish, category); }} whileTap={{ scale: 0.78 }} aria-label={`Agregar ${dish.nombre} al pedido`} className="flex h-8 w-8 items-center justify-center rounded-full border border-[#ff9d16]/40 bg-[#ff9d16]/10 text-[#ffab2e] transition hover:bg-[#ff9d16] hover:text-black"><Plus size={16} strokeWidth={3} /></motion.button></div></div>
                 <button type="button" onClick={() => dish.imagen && setSelectedImage(dish.imagen)} className="dish-visual relative flex w-[33%] min-w-[108px] items-center justify-center overflow-hidden border-l border-[#ff9d16]/15" aria-label={dish.imagen ? `Ampliar imagen de ${dish.nombre}` : undefined}>
                   {dish.imagen ? <img src={dish.imagen} alt={dish.nombre} loading="lazy" className="h-full w-full object-cover transition duration-500 hover:scale-110" /> : <span className="relative flex flex-col items-center text-center"><span className="mb-2 flex h-10 w-10 items-center justify-center rounded-full border border-[#ff9d16]/25 bg-black/25 text-[#ff9d16]"><Utensils size={18} /></span><span className="text-[8px] font-black uppercase leading-snug tracking-[0.15em] text-[#ffc05c]/70">Preparado<br />al momento</span></span>}
                 </button>
@@ -634,6 +827,11 @@ export default function App() {
           <p className="font-title text-2xl text-[#ff9d16]">{RESTAURANTE_NAME}</p>
           <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white/35">Sabor real en cada pedido</p>
           <div className="mt-5 w-full space-y-2 text-left">
+            <a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noopener noreferrer" className="footer-info-card">
+              <Phone size={19} className="shrink-0 text-[#ff9d16]" />
+              <span className="min-w-0 flex-1"><small>Pedidos por WhatsApp y teléfono</small>{STORE_PHONE_DISPLAY}</span>
+              <ChevronRight size={17} className="shrink-0 text-white/35" />
+            </a>
             <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" className="footer-info-card">
               <MapPin size={19} className="shrink-0 text-[#ff9d16]" />
               <span className="min-w-0 flex-1"><small>Encuéntranos en</small>{STORE_ADDRESS}</span>
@@ -680,14 +878,22 @@ export default function App() {
                   </div>
                   {item.isCustomizable && (
                     <div className="rounded-xl border border-white/[0.06] bg-black/35 p-2 text-[10px] space-y-1">
-                      <div className="flex flex-wrap items-center gap-1.5">
-                        <span className="font-bold uppercase tracking-wider text-[#ff9d16]">Cremas:</span>
-                        {item.cremas && item.cremas.length > 0 ? (
-                          <span className="text-white/85">{item.cremas.join(', ')}</span>
-                        ) : (
-                          <span className="italic text-white/40">Sin cremas</span>
-                        )}
-                      </div>
+                      {item.sabores && item.sabores.length > 0 && (
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <span className="font-bold uppercase tracking-wider text-[#ff9d16]">Sabores:</span>
+                          <span className="text-white/85">{item.sabores.join(', ')}</span>
+                        </div>
+                      )}
+                      {item.cremas && (
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <span className="font-bold uppercase tracking-wider text-[#ff9d16]">Cremas:</span>
+                          {item.cremas.length > 0 ? (
+                            <span className="text-white/85">{item.cremas.join(', ')}</span>
+                          ) : (
+                            <span className="italic text-white/40">Sin cremas</span>
+                          )}
+                        </div>
+                      )}
                       {item.comentario && (
                         <div className="flex items-start gap-1 text-white/75">
                           <span className="font-bold text-orange-200/60">Nota:</span>
@@ -706,8 +912,8 @@ export default function App() {
               </div>
               <div className="flex items-center justify-between text-white/65">
                 <span className="flex items-center gap-1.5">
-                  <Bike size={14} className="text-[#ff9d16]" />
-                  <span>Costo de delivery / empaque</span>
+                  <ShoppingBag size={14} className="text-[#ff9d16]" />
+                  <span>Costo de táper / empaque</span>
                 </span>
                 <span className="font-dish font-bold text-[#ffad26]">
                   {calculateDeliveryFee() > 0 ? `+ S/. ${calculateDeliveryFee().toFixed(2)}` : 'S/. 0.00'}
@@ -718,7 +924,7 @@ export default function App() {
                 <span className="font-dish text-2xl font-black text-[#ff9d16]">S/. {calculateTotal().toFixed(2)}</span>
               </div>
               <p className="text-[9px] leading-snug text-white/40">
-                * Costo de S/. 2.00 por Trío de alitas y S/. 1.00 por plato de comida (aplica para delivery y recojo). Bebidas y agregados no pagan costo adicional.
+                * Costo de táper: S/. 1.00 en Salchipapas, Alitas (individuales y dúo), Criollos, Mostrito, Combo 1 y demás platos de comida; S/. 2.00 en Trío de alitas, Alitas familiar, Combo Broaster 2 y 3. Guarniciones y bebidas no pagan táper.
               </p>
             </div>
             <button type="button" onClick={() => { setShowSummary(false); setShowCheckout(true); }} className="brand-button w-full py-4">Elegir entrega y enviar <ChevronRight size={19} /></button>
@@ -746,9 +952,14 @@ export default function App() {
                   <h2 className="truncate font-title text-2xl text-white sm:text-[26px]">
                     {configuringDish.dish.nombre}
                   </h2>
-                  <span className="font-dish text-sm font-black text-[#ffad26]">
-                    {configuringDish.dish.precio} c/u
-                  </span>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <span className="font-dish text-sm font-black text-[#ffad26]">
+                      {configuringDish.dish.precio} c/u
+                    </span>
+                    <span className="rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-bold text-white/70">
+                      📦 Táper: S/. {getItemDeliveryFee({ nombre: configuringDish.dish.nombre, categoriaId: configuringDish.category.id }).toFixed(2)}
+                    </span>
+                  </div>
                 </div>
                 <button
                   type="button"
@@ -876,6 +1087,165 @@ export default function App() {
         )}
       </AnimatePresence>
 
+      {/* Modal de selección de sabores para alitas (Dúo, Trío, Familiar) */}
+      <AnimatePresence>
+        {configuringAlitas && (
+          <div className="modal-backdrop fixed inset-0 z-[65] flex items-end justify-center p-0 sm:items-center sm:p-4">
+            <motion.div
+              initial={{ y: '100%', opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: '100%', opacity: 0 }}
+              transition={{ type: 'spring', damping: 28, stiffness: 260 }}
+              className="modal-panel max-h-[92vh] w-full max-w-md overflow-y-auto rounded-t-[2rem] border border-[#ff9d16]/30 p-5 shadow-2xl sm:rounded-[2rem]"
+            >
+              <div className="mb-4 flex items-center justify-between border-b border-white/[0.08] pb-3">
+                <div className="min-w-0 pr-3">
+                  <div className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-[0.2em] text-[#ff9d16]">
+                    <Sparkles size={13} />
+                    <span>Selección de sabores</span>
+                  </div>
+                  <h2 className="truncate font-title text-2xl text-white sm:text-[26px]">
+                    {configuringAlitas.dish.nombre}
+                  </h2>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <span className="font-dish text-sm font-black text-[#ffad26]">
+                      {configuringAlitas.dish.precio}
+                    </span>
+                    <span className="rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-bold text-white/70">
+                      📦 Táper: S/. {getItemDeliveryFee({ nombre: configuringAlitas.dish.nombre, categoriaId: configuringAlitas.category.id }).toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setConfiguringAlitas(null)}
+                  className="modal-close"
+                  aria-label="Cerrar selección de sabores"
+                >
+                  <X size={19} />
+                </button>
+              </div>
+
+              {/* Sabores selection */}
+              <div className="mb-5">
+                <div className="mb-2.5 flex items-center justify-between">
+                  <div>
+                    <label className="block text-[11px] font-black uppercase tracking-[0.14em] text-white/85">
+                      Elige tus sabores ({configuringAlitas.maxFlavors} permitidos)
+                    </label>
+                    <span className="text-[9px] font-semibold text-white/45">
+                      {selectedSabores.length === configuringAlitas.maxFlavors
+                        ? '✅ ¡Sabores completos!'
+                        : `Selecciona ${configuringAlitas.maxFlavors - selectedSabores.length} más (${selectedSabores.length} de ${configuringAlitas.maxFlavors})`}
+                    </span>
+                  </div>
+                  {selectedSabores.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setSelectedSabores([])}
+                      className="crema-quick-btn"
+                    >
+                      Limpiar
+                    </button>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  {ALITAS_SABORES.map(sabor => {
+                    const isSelected = selectedSabores.includes(sabor.nombre);
+                    const isMaxReached = selectedSabores.length >= configuringAlitas.maxFlavors && !isSelected;
+                    return (
+                      <button
+                        key={sabor.id}
+                        type="button"
+                        onClick={() => toggleSabor(sabor.nombre)}
+                        disabled={isMaxReached}
+                        className={`crema-chip ${isSelected ? 'selected' : ''} ${isMaxReached ? 'opacity-40 cursor-not-allowed' : ''}`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="text-base">{sabor.emoji}</span>
+                          <span className="text-xs font-bold">{sabor.nombre}</span>
+                        </div>
+                        <div
+                          className={`flex h-5 w-5 items-center justify-center rounded-full border transition ${
+                            isSelected
+                              ? 'border-[#ff9d16] bg-[#ff9d16] text-[#130d07]'
+                              : 'border-white/20 bg-white/[0.04] text-transparent'
+                          }`}
+                        >
+                          <Check size={13} strokeWidth={3.5} />
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Comentarios / Indicaciones */}
+              <div className="mb-5">
+                <label className="mb-1.5 block text-[11px] font-black uppercase tracking-[0.14em] text-white/85" htmlFor="alitas-comment">
+                  Comentarios o indicaciones especiales
+                </label>
+                <textarea
+                  id="alitas-comment"
+                  rows={2}
+                  value={alitasComment}
+                  onChange={e => setAlitasComment(e.target.value)}
+                  placeholder="Ej. Salsa aparte, bien doraditas..."
+                  className={`${fieldClass} resize-none text-xs`}
+                />
+              </div>
+
+              {/* Cantidad y botón de agregar */}
+              <div className="flex items-center gap-3 border-t border-white/[0.08] pt-4">
+                <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-black/40 px-3 py-2">
+                  <button
+                    type="button"
+                    onClick={() => setAlitasQuantity(q => Math.max(1, q - 1))}
+                    disabled={alitasQuantity <= 1}
+                    className="p-1 text-white/60 hover:text-[#ff9d16] disabled:opacity-30"
+                    aria-label="Disminuir cantidad"
+                  >
+                    <Minus size={16} />
+                  </button>
+                  <span className="w-5 text-center font-dish text-sm font-black text-white">
+                    {alitasQuantity}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setAlitasQuantity(q => q + 1)}
+                    className="p-1 text-[#ff9d16] hover:scale-110"
+                    aria-label="Aumentar cantidad"
+                  >
+                    <Plus size={16} />
+                  </button>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={confirmConfiguredAlitas}
+                  disabled={selectedSabores.length !== configuringAlitas.maxFlavors}
+                  className={`brand-button flex-1 py-3.5 text-xs font-black ${
+                    selectedSabores.length !== configuringAlitas.maxFlavors ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
+                >
+                  {selectedSabores.length !== configuringAlitas.maxFlavors ? (
+                    <span>Elige {configuringAlitas.maxFlavors - selectedSabores.length} sabor{configuringAlitas.maxFlavors - selectedSabores.length > 1 ? 'es' : ''} más</span>
+                  ) : (
+                    <>
+                      <span>Agregar al pedido</span>
+                      <span className="rounded-lg bg-black/20 px-2 py-0.5 text-[11px]">
+                        S/. {(getDishUnitPrice(configuringAlitas.dish.precio) * alitasQuantity).toFixed(2)}
+                      </span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       <AnimatePresence>{showCheckout && (
         <div className="modal-backdrop fixed inset-0 z-[70] flex items-end justify-center p-0 sm:items-center sm:p-4">
           <motion.div initial={{ y: '100%', opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: '100%', opacity: 0 }} transition={{ type: 'spring', damping: 28, stiffness: 250 }} className="modal-panel max-h-[94vh] w-full max-w-md overflow-y-auto rounded-t-[2rem] border border-white/10 p-5 sm:rounded-[2rem]">
@@ -895,7 +1265,7 @@ export default function App() {
                   <span className="font-dish font-bold text-white">S/. {calculateSubtotal().toFixed(2)}</span>
                 </div>
                 <div className="flex items-center justify-between text-white/60">
-                  <span>{orderType === 'delivery' ? '🛵 Costo de delivery / empaque:' : '🏪 Costo de empaque / despacho:'}</span>
+                  <span>{orderType === 'delivery' ? '🛵 Táper / empaque delivery:' : '🏪 Táper para llevar:'}</span>
                   <span className="font-dish font-bold text-[#ffad26]">+ S/. {calculateDeliveryFee().toFixed(2)}</span>
                 </div>
                 <div className="flex items-center justify-between border-t border-white/[0.08] pt-2 text-sm">
