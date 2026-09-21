@@ -79,7 +79,6 @@ const DISH_QUERY_OVERRIDES = {
   'Arroz chaufa 3 sabores': 'arroz chaufa especial tres sabores',
 
   // Alitas diferenciadas por estilo y presentación
-  'Alitas clásicas': 'alitas clasicas fritas doradas',
   'Alitas broaster': 'alitas broaster crocantes con papas',
   'Alitas Hot Wings': 'alitas hot wings picantes salsa',
   'Duo alitas': 'duo alitas combo papas',

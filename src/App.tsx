@@ -66,7 +66,6 @@ const LOCAL_IMAGES: Record<string, string> = {
   'Arroz chaufa de carne': '/assets/platos/arroz-chaufa-de-carne.webp',
   'Arroz chaufa de cerdo': '/assets/platos/arroz-chaufa-de-cerdo.webp',
   'Arroz chaufa 3 sabores': '/assets/platos/arroz-chaufa-3-sabores.webp',
-  'Alitas clásicas': '/assets/platos/alitas-clasicas.webp',
   'Alitas broaster': '/assets/platos/alitas-broaster.webp',
   'Alitas búfalo': '/assets/platos/alitas-bufalo.webp',
   'Alitas en salsa de maracuyá': '/assets/platos/alitas-en-salsa-de-maracuya.webp',
@@ -226,12 +225,14 @@ const getMaxAlitasFlavors = (dishName: string): number => {
 
 const isExcludedCategory = (value: string) => /waffle|gofre|^s[aá]nguches?$/i.test(value.trim());
 const isWaffleRelated = (value: string) => /waffle|gofre/i.test(value);
+const isExcludedDish = (value: string) => /alitas\s*cl[aá]sicas/i.test(value.trim());
+
 const sanitizeCategories = (items: Category[]) => items
   .filter(category => !isExcludedCategory(category.nombre) && !isExcludedCategory(category.id))
   .map(category => ({
     ...category,
     items: category.items
-      .filter(dish => !isWaffleRelated(`${dish.nombre} ${dish.descripcion || ''}`))
+      .filter(dish => !isWaffleRelated(`${dish.nombre} ${dish.descripcion || ''}`) && !isExcludedDish(dish.nombre))
       .map(dish => ({
         ...dish,
         imagen: LOCAL_IMAGES[dish.nombre] || dish.imagen,
