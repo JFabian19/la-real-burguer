@@ -17,10 +17,12 @@ export interface SheetCategory {
 }
 
 export const fetchSheetData = async <T>(sheetName: string): Promise<T[]> => {
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
+  // El parámetro `_` evita que Google/CDN o el navegador entreguen una copia
+  // anterior después de editar la hoja.
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}&_=${Date.now()}`;
   
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, { cache: 'no-store' });
     if (!response.ok) {
       throw new Error(`Google Sheets respondió ${response.status}`);
     }
@@ -33,6 +35,7 @@ export const fetchSheetData = async <T>(sheetName: string): Promise<T[]> => {
       Papa.parse(csvText, {
         header: true,
         skipEmptyLines: true,
+        transformHeader: header => header.trim(),
         complete: (results) => {
           if (results.errors.length > 0) {
             reject(new Error(results.errors.map(error => error.message).join('; ')));
@@ -45,7 +48,7 @@ export const fetchSheetData = async <T>(sheetName: string): Promise<T[]> => {
     });
   } catch (error) {
     console.error(`Error fetching sheet ${sheetName}:`, error);
-    return [];
+    throw error;
   }
 };
 

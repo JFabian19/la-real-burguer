@@ -23,6 +23,7 @@ const LOGO_PATH = assetPath('assets/la-real-logo.webp');
 const BANNER_PATH = assetPath('assets/la-real-banner.webp');
 const BIRTHDAY_PROMO_PATH = assetPath('assets/birthday-promo.webp');
 const MARQUEE_TEXT = '🔥 HAMBURGUESAS CON SABOR REAL • PEDIDOS RÁPIDOS POR WHATSAPP • RECOJO EN TIENDA O DELIVERY • ';
+const SHEETS_REFRESH_INTERVAL_MS = 60_000;
 
 const TikTokIcon = ({ size = 18 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -591,29 +592,69 @@ export default function App() {
   const [alitasQuantity, setAlitasQuantity] = useState(1);
 
   useEffect(() => {
-    const loadData = async () => {
+    let disposed = false;
+
+    const getCategoryName = (category: SheetCategory) => {
+      const row = category as unknown as Record<string, string | undefined>;
+      const exactName = row.nombre?.trim();
+      if (exactName) return exactName;
+
+      // Tolera hojas donde el encabezado "nombre" fue unido accidentalmente
+      // con otras celdas. Los valores de las filas siguen siendo recuperables.
+      const nameKey = Object.keys(row).find(key => normalizeText(key).startsWith('nombre'));
+      return nameKey ? row[nameKey]?.trim() || '' : '';
+    };
+
+    const getDeliveryPrice = (category: SheetCategory) => {
+      const row = category as unknown as Record<string, string | undefined>;
+      const priceKey = Object.keys(row).find(key => normalizeText(key) === 'precio por delivery');
+      return parseDeliveryPrice(priceKey ? row[priceKey] : undefined);
+    };
+
+    const loadData = async (initialLoad = false) => {
       try {
         if (!SHEET_ID) {
           const cleanCategories = sanitizeCategories(DEFAULT_MENU_DATA);
-          setCategories(cleanCategories);
-          setActiveCategory(cleanCategories[0]?.id ?? null);
+          if (!disposed) {
+            setCategories(cleanCategories);
+            setActiveCategory(current => cleanCategories.some(category => category.id === current) ? current : cleanCategories[0]?.id ?? null);
+          }
           return;
         }
         const [cats, dishes] = await Promise.all([
           fetchSheetData<SheetCategory>('Categorías'),
           fetchSheetData<SheetDish>('Platos'),
         ]);
-        if (cats.length === 0 || dishes.length === 0) {
-          const cleanCategories = sanitizeCategories(DEFAULT_MENU_DATA);
-          setCategories(cleanCategories);
-          setActiveCategory(cleanCategories[0]?.id ?? null);
-          return;
+        if (dishes.length === 0) {
+          throw new Error('La hoja Platos no contiene filas utilizables');
         }
-        const formattedCategories: Category[] = cats.map(category => ({
-          id: slugify(category.nombre),
-          nombre: category.nombre.trim(),
-          deliveryPrice: parseDeliveryPrice(category['precio por delivery']),
-          items: dishes.filter(dish => normalizeText(dish.categoría) === normalizeText(category.nombre)).map(dish => ({
+
+        const sheetCategories = cats
+          .map(category => ({
+            nombre: getCategoryName(category),
+            deliveryPrice: getDeliveryPrice(category),
+          }))
+          .filter(category => category.nombre);
+        const deliveryPrices = new Map(sheetCategories.map(category => [normalizeText(category.nombre), category.deliveryPrice]));
+        const dishCategoryNames = Array.from(new Map(
+          dishes
+            .map(dish => dish.categoría?.trim())
+            .filter((name): name is string => Boolean(name))
+            .map(name => [normalizeText(name), name]),
+        ).values());
+        const hasValidCategoryHeader = cats.length > 0 && Object.keys(cats[0] as object).some(key => normalizeText(key) === 'nombre');
+        const categoryNames = hasValidCategoryHeader
+          ? [
+              ...sheetCategories.map(category => category.nombre),
+              ...dishCategoryNames.filter(name => !sheetCategories.some(category => normalizeText(category.nombre) === normalizeText(name))),
+            ]
+          : dishCategoryNames;
+
+        const formattedCategories: Category[] = categoryNames.map(categoryName => ({
+          id: slugify(categoryName),
+          nombre: categoryName,
+          deliveryPrice: deliveryPrices.get(normalizeText(categoryName)),
+          items: dishes.filter(dish => normalizeText(dish.categoría) === normalizeText(categoryName)).map(dish => ({
             nombre: dish['nombre del plato']?.trim(),
             descripcion: dish.descripción?.trim() || undefined,
             precio: dish.precio?.trim(),
@@ -621,18 +662,37 @@ export default function App() {
           })),
         }));
         const cleanCategories = sanitizeCategories(formattedCategories);
-        setCategories(cleanCategories);
-        setActiveCategory(cleanCategories[0]?.id ?? null);
+        if (!disposed) {
+          setCategories(cleanCategories);
+          setActiveCategory(current => cleanCategories.some(category => category.id === current) ? current : cleanCategories[0]?.id ?? null);
+        }
       } catch (error) {
         console.error('Error loading data:', error);
-        const cleanCategories = sanitizeCategories(DEFAULT_MENU_DATA);
-        setCategories(cleanCategories);
-        setActiveCategory(cleanCategories[0]?.id ?? null);
+        if (initialLoad && !disposed) {
+          const cleanCategories = sanitizeCategories(DEFAULT_MENU_DATA);
+          setCategories(cleanCategories);
+          setActiveCategory(current => cleanCategories.some(category => category.id === current) ? current : cleanCategories[0]?.id ?? null);
+        }
       } finally {
-        setLoading(false);
+        if (initialLoad && !disposed) setLoading(false);
       }
     };
-    loadData();
+
+    const refreshWhenVisible = () => {
+      if (document.visibilityState === 'visible') void loadData();
+    };
+
+    void loadData(true);
+    const refreshTimer = window.setInterval(() => void loadData(), SHEETS_REFRESH_INTERVAL_MS);
+    window.addEventListener('focus', refreshWhenVisible);
+    document.addEventListener('visibilitychange', refreshWhenVisible);
+
+    return () => {
+      disposed = true;
+      window.clearInterval(refreshTimer);
+      window.removeEventListener('focus', refreshWhenVisible);
+      document.removeEventListener('visibilitychange', refreshWhenVisible);
+    };
   }, []);
 
   useEffect(() => {
