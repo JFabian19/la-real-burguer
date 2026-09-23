@@ -462,13 +462,27 @@ const isSandwichCategory = (categoriaId?: string) => {
   return ['hamburguesa', 'filete', 'chorizo', 'hot-dog', 'hotdog'].some(category => value.includes(category));
 };
 
-const getItemDeliveryFee = (item: { nombre: string; categoriaId?: string; deliveryPrice?: number | null }) => {
+const getItemContainerFee = (item: { nombre: string; categoriaId?: string; deliveryPrice?: number | null }) => {
+  const normName = item.nombre.toLowerCase().trim();
+  const normCat = (item.categoriaId || '').toLowerCase().trim();
+
+  // Estas presentaciones usan dos envases, aunque la categoría tenga S/. 1.
+  if (
+    normName.includes('trío de alitas') ||
+    normName.includes('trio de alitas') ||
+    normName.includes('trio alitas') ||
+    normName.includes('alitas familiar') ||
+    normName.includes('combo broaster 2') ||
+    normName.includes('combo 2') ||
+    normName.includes('combo broaster 3') ||
+    normName.includes('combo 3')
+  ) {
+    return 2;
+  }
+
   if (item.deliveryPrice !== undefined) {
     return item.deliveryPrice ?? 0;
   }
-
-  const normName = item.nombre.toLowerCase().trim();
-  const normCat = (item.categoriaId || '').toLowerCase().trim();
 
   // Los sánguches y los tequeños no pagan táper.
   if (
@@ -478,26 +492,6 @@ const getItemDeliveryFee = (item: { nombre: string; categoriaId?: string; delive
     normName.includes('tequeño')
   ) {
     return 0;
-  }
-
-  // 1. Reglas específicas de S/. 2.00 de táper:
-  // - Trío de alitas y Alitas familiar
-  if (
-    normName.includes('trío de alitas') ||
-    normName.includes('trio de alitas') ||
-    normName.includes('trio alitas') ||
-    normName.includes('alitas familiar')
-  ) {
-    return 2;
-  }
-  // - Broaster: Combo 2 y Combo 3
-  if (
-    normName.includes('combo broaster 2') ||
-    normName.includes('combo 2') ||
-    normName.includes('combo broaster 3') ||
-    normName.includes('combo 3')
-  ) {
-    return 2;
   }
 
   // 2. Bebidas y guarniciones / agregados no pagan táper (S/. 0.00)
@@ -538,6 +532,11 @@ const getItemDeliveryFee = (item: { nombre: string; categoriaId?: string; delive
   }
   // - Demás platos de comida (1 sol)
   return 1;
+};
+
+const formatContainerFee = (fee: number) => {
+  const quantity = fee === 1 ? '1 envase' : fee === 2 ? '2 envases' : 'Envase';
+  return `${quantity} · S/. ${fee.toFixed(2)}`;
 };
 
 const getDishUnitPrice = (precio: string) => {
@@ -708,9 +707,12 @@ export default function App() {
     return total + numericPrice * item.cantidad;
   }, 0);
 
-  // El delivery se coordina y cobra por separado. El total mostrado aquí
-  // contiene únicamente productos y agregados elegidos por el cliente.
-  const calculateTotal = () => calculateSubtotal();
+  const calculateContainerFee = () => cart.reduce((total, item) => {
+    return total + getItemContainerFee(item) * item.cantidad;
+  }, 0);
+
+  // El delivery se coordina y cobra por separado; solo se suma el envase.
+  const calculateTotal = () => calculateSubtotal() + calculateContainerFee();
 
   const handleDishClick = (dish: Dish, cat: Category) => {
     const maxFlavors = getMaxAlitasFlavors(dish.nombre);
@@ -938,6 +940,7 @@ export default function App() {
   const sendToWhatsApp = (event: React.FormEvent) => {
     event.preventDefault();
     const subtotal = calculateSubtotal();
+    const containerFee = calculateContainerFee();
     const total = calculateTotal();
 
     let message = `🍔 *NUEVO PEDIDO — ${RESTAURANTE_NAME.toUpperCase()}*\n\n*Detalle del pedido*\n`;
@@ -968,6 +971,9 @@ export default function App() {
     });
 
     message += `\n📋 *Subtotal productos:* S/. ${subtotal.toFixed(2)}\n`;
+    if (containerFee > 0) {
+      message += `📦 *Costo por envase:* S/. ${containerFee.toFixed(2)}\n`;
+    }
     message += `💰 *TOTAL A PAGAR: S/. ${total.toFixed(2)}*\n\n`;
 
     if (orderType === 'delivery') {
@@ -1134,7 +1140,7 @@ export default function App() {
             </div>
             <div className="space-y-3">{category.items.map((dish, index) => (
               <motion.article key={`${dish.nombre}-${dish.precio}`} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-30px' }} transition={{ delay: Math.min(index * 0.025, 0.15) }} className="menu-dish-row relative flex min-h-[126px] overflow-hidden rounded-[1.35rem] border border-white/[0.09] bg-gradient-to-br from-[#1b1915] to-[#11100e] shadow-[0_14px_30px_rgba(0,0,0,.22)]">
-                <div className="flex min-w-0 flex-1 flex-col p-4 pr-2 cursor-pointer" onClick={() => handleDishClick(dish, category)}><div className="flex items-start gap-2"><h4 className="font-dish text-[13px] font-black uppercase leading-[1.08] tracking-wide text-white">{dish.nombre}</h4><span className="mt-2.5 min-w-3 flex-1 border-t border-dotted border-[#ff9d16]/35" /></div>{dish.descripcion && <p className="mt-2 line-clamp-3 pr-1 text-[10px] leading-[1.35] text-white/52">{dish.descripcion}</p>}<div className="flex-1" /><div className="mt-3 flex flex-wrap items-center gap-2"><span className="rounded-lg bg-[#ff9d16] px-2.5 py-1 font-dish text-[12px] font-black text-[#1a0f05]">{dish.precio}</span>{getMaxAlitasFlavors(dish.nombre) > 0 ? <span className="rounded-md border border-[#ff9d16]/30 bg-[#ff9d16]/10 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider text-[#ffb13a]">{getMaxAlitasFlavors(dish.nombre)} Sabores</span> : category.addOns ? <span className="rounded-md border border-[#ff9d16]/30 bg-[#ff9d16]/10 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider text-[#ffb13a]">{category.addOns.selectionType === 'multiple' ? 'Cremas' : 'Personalizable'}</span> : null}<motion.button type="button" onClick={(e) => { e.stopPropagation(); handleDishClick(dish, category); }} whileTap={{ scale: 0.78 }} aria-label={`Agregar ${dish.nombre} al pedido`} className="flex h-8 w-8 items-center justify-center rounded-full border border-[#ff9d16]/40 bg-[#ff9d16]/10 text-[#ffab2e] transition hover:bg-[#ff9d16] hover:text-black"><Plus size={16} strokeWidth={3} /></motion.button></div></div>
+                <div className="flex min-w-0 flex-1 flex-col p-4 pr-2 cursor-pointer" onClick={() => handleDishClick(dish, category)}><div className="flex items-start gap-2"><h4 className="font-dish text-[13px] font-black uppercase leading-[1.08] tracking-wide text-white">{dish.nombre}</h4><span className="mt-2.5 min-w-3 flex-1 border-t border-dotted border-[#ff9d16]/35" /></div>{dish.descripcion && <p className="mt-2 line-clamp-3 pr-1 text-[10px] leading-[1.35] text-white/52">{dish.descripcion}</p>}<div className="flex-1" /><div className="mt-3 flex flex-wrap items-center gap-2"><span className="rounded-lg bg-[#ff9d16] px-2.5 py-1 font-dish text-[12px] font-black text-[#1a0f05]">{dish.precio}</span>{getMaxAlitasFlavors(dish.nombre) > 0 ? <span className="rounded-md border border-[#ff9d16]/30 bg-[#ff9d16]/10 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider text-[#ffb13a]">{getMaxAlitasFlavors(dish.nombre)} Sabores</span> : category.addOns ? <span className="rounded-md border border-[#ff9d16]/30 bg-[#ff9d16]/10 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider text-[#ffb13a]">{category.addOns.selectionType === 'multiple' ? 'Cremas' : 'Personalizable'}</span> : null}{getItemContainerFee({ nombre: dish.nombre, categoriaId: category.id, deliveryPrice: category.deliveryPrice }) > 0 && <span className="rounded-md border border-white/10 bg-white/5 px-1.5 py-0.5 text-[8px] font-bold text-white/70">📦 {formatContainerFee(getItemContainerFee({ nombre: dish.nombre, categoriaId: category.id, deliveryPrice: category.deliveryPrice }))}</span>}<motion.button type="button" onClick={(e) => { e.stopPropagation(); handleDishClick(dish, category); }} whileTap={{ scale: 0.78 }} aria-label={`Agregar ${dish.nombre} al pedido`} className="flex h-8 w-8 items-center justify-center rounded-full border border-[#ff9d16]/40 bg-[#ff9d16]/10 text-[#ffab2e] transition hover:bg-[#ff9d16] hover:text-black"><Plus size={16} strokeWidth={3} /></motion.button></div></div>
                 <button type="button" onClick={() => dish.imagen && setSelectedImage(dish.imagen)} className="dish-visual relative flex w-[33%] min-w-[108px] items-center justify-center overflow-hidden border-l border-[#ff9d16]/15" aria-label={dish.imagen ? `Ampliar imagen de ${dish.nombre}` : undefined}>
                   {dish.imagen ? <img src={dish.imagen} alt={dish.nombre} loading="lazy" className="h-full w-full object-cover transition duration-500 hover:scale-110" /> : <span className="relative flex flex-col items-center text-center"><span className="mb-2 flex h-10 w-10 items-center justify-center rounded-full border border-[#ff9d16]/25 bg-black/25 text-[#ff9d16]"><Utensils size={18} /></span><span className="text-[8px] font-black uppercase leading-snug tracking-[0.15em] text-[#ffc05c]/70">Preparado<br />al momento</span></span>}
                 </button>
@@ -1245,6 +1251,17 @@ export default function App() {
                 <span>Subtotal platos</span>
                 <span className="font-dish font-bold text-white">S/. {calculateSubtotal().toFixed(2)}</span>
               </div>
+              {calculateContainerFee() > 0 && (
+                <div className="flex items-center justify-between text-white/65">
+                  <span className="flex items-center gap-1.5">
+                    <ShoppingBag size={14} className="text-[#ff9d16]" />
+                    <span>Costo por envase</span>
+                  </span>
+                  <span className="font-dish font-bold text-[#ffad26]">
+                    + S/. {calculateContainerFee().toFixed(2)}
+                  </span>
+                </div>
+              )}
               <div className="flex items-center justify-between border-t border-white/[0.08] pt-2.5 text-sm">
                 <span className="font-bold text-white">Total a pagar</span>
                 <span className="font-dish text-2xl font-black text-[#ff9d16]">S/. {calculateTotal().toFixed(2)}</span>
@@ -1279,6 +1296,11 @@ export default function App() {
                     <span className="font-dish text-sm font-black text-[#ffad26]">
                       {configuringDish.dish.precio} c/u
                     </span>
+                    {getItemContainerFee({ nombre: configuringDish.dish.nombre, categoriaId: configuringDish.category.id, deliveryPrice: configuringDish.category.deliveryPrice }) > 0 && (
+                      <span className="rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-bold text-white/70">
+                        📦 {formatContainerFee(getItemContainerFee({ nombre: configuringDish.dish.nombre, categoriaId: configuringDish.category.id, deliveryPrice: configuringDish.category.deliveryPrice }))}
+                      </span>
+                    )}
                   </div>
                 </div>
                 <button
@@ -1559,6 +1581,11 @@ export default function App() {
                     <span className="font-dish text-sm font-black text-[#ffad26]">
                       {configuringAlitas.dish.precio}
                     </span>
+                    {getItemContainerFee({ nombre: configuringAlitas.dish.nombre, categoriaId: configuringAlitas.category.id, deliveryPrice: configuringAlitas.category.deliveryPrice }) > 0 && (
+                      <span className="rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-bold text-white/70">
+                        📦 {formatContainerFee(getItemContainerFee({ nombre: configuringAlitas.dish.nombre, categoriaId: configuringAlitas.category.id, deliveryPrice: configuringAlitas.category.deliveryPrice }))}
+                      </span>
+                    )}
                   </div>
                 </div>
                 <button
@@ -1709,6 +1736,12 @@ export default function App() {
                   <span>Subtotal platos:</span>
                   <span className="font-dish font-bold text-white">S/. {calculateSubtotal().toFixed(2)}</span>
                 </div>
+                {calculateContainerFee() > 0 && (
+                  <div className="flex items-center justify-between text-white/60">
+                    <span>📦 Costo por envase:</span>
+                    <span className="font-dish font-bold text-[#ffad26]">+ S/. {calculateContainerFee().toFixed(2)}</span>
+                  </div>
+                )}
                 <div className="flex items-center justify-between border-t border-white/[0.08] pt-2 text-sm">
                   <span className="font-bold text-white">Total a pagar:</span>
                   <span className="font-dish text-lg font-black text-[#ff9d16]">S/. {calculateTotal().toFixed(2)}</span>
