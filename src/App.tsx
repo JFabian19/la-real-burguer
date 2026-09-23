@@ -13,14 +13,22 @@ const RESTAURANTE_SLOGAN = 'Sabor real, momentos inolvidables';
 const WHATSAPP_NUMBER = '51914795450';
 const STORE_PHONE_DISPLAY = '914 795 450';
 const STORE_ADDRESS = 'Asoc. San Francisco, calle Los Álamos, Mz. 05, Lt. 10, 02002 Coronel Gregorio Albarracín Lanchipa, Perú';
-const STORE_HOURS = 'Lunes a sábado · 9:00 a. m. – 6:00 p. m.';
+const STORE_HOURS = 'Lunes a sábado · 5:00 p. m. – 12:00 a. m.';
 const MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(STORE_ADDRESS)}`;
 const INSTAGRAM_URL = 'https://www.instagram.com/larealburguer.pe/';
 const FACEBOOK_URL = 'https://www.facebook.com/p/La-Real-burguer-sangucheria-100066460213380/';
+const TIKTOK_URL = 'https://www.tiktok.com/@larealburguer9gmail.com';
 const LOGO_PATH = '/assets/la-real-logo.png';
 const BANNER_PATH = '/assets/la-real-banner.png';
 const BIRTHDAY_PROMO_PATH = '/assets/birthday-promo.png';
 const MARQUEE_TEXT = '🔥 HAMBURGUESAS CON SABOR REAL • PEDIDOS RÁPIDOS POR WHATSAPP • RECOJO EN TIENDA O DELIVERY • ';
+
+const TikTokIcon = ({ size = 18 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07Z" />
+  </svg>
+);
+
 const LOCAL_IMAGES: Record<string, string> = {
   'Burger clásica': '/assets/platos/burger-clasica.webp',
   'Cheese Burger': '/assets/platos/cheese-burger.webp',
@@ -178,15 +186,33 @@ const LOCAL_IMAGES: Record<string, string> = {
 };
 
 interface Dish { nombre: string; descripcion?: string; imagen?: string; precio: string; }
-interface Category { id: string; nombre: string; items: Dish[]; }
+interface AddOnOption { id: string; nombre: string; precio: number; emoji?: string; }
+interface CategoryAddOns {
+  title: string;
+  selectionType: 'multiple' | 'single' | 'per-dish';
+  maxSelections?: number;
+  required: boolean;
+  options: AddOnOption[];
+}
+interface Category {
+  id: string;
+  nombre: string;
+  items: Dish[];
+  addOns?: CategoryAddOns | null;
+  deliveryPrice?: number | null;
+}
 interface CartItem {
   id: string;
   nombre: string;
   precio: string;
   cantidad: number;
   categoriaId?: string;
+  deliveryPrice?: number | null;
   cremas?: string[];
   sabores?: string[];
+  conLeche?: boolean;
+  topping?: string;
+  agregadoPrecio?: number;
   comentario?: string;
   isCustomizable?: boolean;
 }
@@ -195,24 +221,35 @@ interface OrderData { nombre: string; telefono: string; direccion: string; refer
 interface UserLocation { latitude: number; longitude: number; accuracy: number; }
 
 const CREMAS_DISPONIBLES = [
-  { id: 'ketchup', nombre: 'Kétchup', emoji: '🍅' },
-  { id: 'mostaza', nombre: 'Mostaza', emoji: '🟡' },
-  { id: 'aji', nombre: 'Ají de la casa', emoji: '🌶️' },
-  { id: 'chimichurri', nombre: 'Chimichurri', emoji: '🌿' },
-  { id: 'mayonesa', nombre: 'Mayonesa', emoji: '⚪' },
-  { id: 'aceituna', nombre: 'Aceituna', emoji: '🫒' },
+  { id: 'ketchup', nombre: 'Kétchup', precio: 0, emoji: '🍅' },
+  { id: 'mostaza', nombre: 'Mostaza', precio: 0, emoji: '🟡' },
+  { id: 'aji', nombre: 'Ají de la casa', precio: 0, emoji: '🌶️' },
+  { id: 'chimichurri', nombre: 'Chimichurri', precio: 0, emoji: '🌿' },
+  { id: 'mayonesa', nombre: 'Mayonesa', precio: 0, emoji: '⚪' },
+  { id: 'aceituna', nombre: 'Aceituna', precio: 0, emoji: '🫒' },
 ];
 
 const ALITAS_SABORES = [
-  { id: 'bbq', nombre: 'BBQ', emoji: '🍖' },
-  { id: 'bufalo', nombre: 'Búfalo', emoji: '🔥' },
-  { id: 'broaster', nombre: 'Broaster', emoji: '🍗' },
-  { id: 'hot-wings', nombre: 'Hot Wings', emoji: '🌶️' },
-  { id: 'acevichada', nombre: 'Acevichada', emoji: '🍋' },
-  { id: 'maracuya', nombre: 'Maracuyá', emoji: '🍯' },
-  { id: 'anticucheras', nombre: 'Anticucheras', emoji: '🍢' },
-  { id: 'teriyaki', nombre: 'Teriyaki', emoji: '🥢' },
-  { id: 'honey-mustard', nombre: 'Honey Mustard', emoji: '🟡' },
+  { id: 'bbq', nombre: 'BBQ', precio: 0, emoji: '🍖' },
+  { id: 'bufalo', nombre: 'Búfalo', precio: 0, emoji: '🔥' },
+  { id: 'broaster', nombre: 'Broaster', precio: 0, emoji: '🍗' },
+  { id: 'hot-wings', nombre: 'Hot Wings', precio: 0, emoji: '🌶️' },
+  { id: 'acevichada', nombre: 'Acevichada', precio: 0, emoji: '🍋' },
+  { id: 'maracuya', nombre: 'Maracuyá', precio: 0, emoji: '🍯' },
+  { id: 'anticucheras', nombre: 'Anticucheras', precio: 0, emoji: '🍢' },
+  { id: 'teriyaki', nombre: 'Teriyaki', precio: 0, emoji: '🥢' },
+  { id: 'honey-mustard', nombre: 'Honey Mustard', precio: 0, emoji: '🟡' },
+  { id: 'diablas', nombre: 'Diablas', precio: 0, emoji: '🌶️' },
+];
+
+const JUGO_AGREGADOS: AddOnOption[] = [
+  { id: 'sin-leche', nombre: 'Sin leche', precio: 0, emoji: '🥤' },
+  { id: 'con-leche', nombre: 'Con leche', precio: 3, emoji: '🥛' },
+];
+
+const BATIDO_AGREGADOS: AddOnOption[] = [
+  { id: 'granola', nombre: 'Granola', precio: 0, emoji: '🥣' },
+  { id: 'crema-batida', nombre: 'Crema batida', precio: 0, emoji: '🍦' },
 ];
 
 const getMaxAlitasFlavors = (dishName: string): number => {
@@ -225,37 +262,135 @@ const getMaxAlitasFlavors = (dishName: string): number => {
 
 const isExcludedCategory = (value: string) => /waffle|gofre|^s[aá]nguches?$/i.test(value.trim());
 const isWaffleRelated = (value: string) => /waffle|gofre/i.test(value);
-const isExcludedDish = (value: string) => /alitas\s*cl[aá]sicas/i.test(value.trim());
+const isExcludedDish = (value: string) => /alitas\s*cl[aá]sicas|leche\s+adicional\s+para\s+jugo/i.test(value.trim());
+
+const normalizeText = (value: string) => value
+  .normalize('NFD')
+  .replace(/[\u0300-\u036f]/g, '')
+  .toLowerCase()
+  .trim();
+
+const slugify = (value: string) => normalizeText(value)
+  .replace(/[^a-z0-9]+/g, '-')
+  .replace(/^-|-$/g, '');
+
+const parseDeliveryPrice = (value?: string): number | null => {
+  const cleanValue = (value || '').trim().replace(',', '.');
+  if (!cleanValue) return null;
+  const price = Number.parseFloat(cleanValue);
+  return Number.isFinite(price) && price > 0 ? price : null;
+};
+
+const getFallbackAddOns = (category: Category): CategoryAddOns | null => {
+  const value = normalizeText(`${category.id} ${category.nombre}`);
+  if (value.includes('alitas')) {
+    return { title: 'Elige tus sabores', selectionType: 'per-dish', required: true, options: ALITAS_SABORES };
+  }
+  if (value.includes('jugo')) {
+    return { title: 'Elige tu preparación', selectionType: 'single', maxSelections: 1, required: true, options: JUGO_AGREGADOS };
+  }
+  if (value.includes('batido')) {
+    return { title: 'Elige 1 topping', selectionType: 'single', maxSelections: 1, required: true, options: BATIDO_AGREGADOS };
+  }
+  if (/hamburguesa|filete|chorizo|hot[ -]?dog|salchipapa/.test(value)) {
+    return { title: 'Elige tus cremas', selectionType: 'multiple', required: false, options: CREMAS_DISPONIBLES };
+  }
+  return null;
+};
+
+const getCategoryAddOnOptions = (category: Category, fallback: AddOnOption[]) =>
+  category.addOns?.options.length ? category.addOns.options : fallback;
+
+const DESCRIPTION_OVERRIDES: Record<string, string> = {
+  'burger clasica': 'Burger, rodajas de tomate y lechuga orgánica.',
+  'cheese burger': 'Burger, doble queso edam, rodajas de tomate y lechuga orgánica.',
+  'cheddar burger': 'Burger, doble queso cheddar, rodajas de tomate, aros de cebolla y lechuga orgánica.',
+  'royal burger': 'Burger, huevo frito, queso edam, rodajas de tomate y lechuga orgánica.',
+  'royal americana': 'Burger, huevo frito, queso edam, jamón americano, rodajas de tomate y lechuga.',
+  'bacon burger': 'Burger, doble bacon, doble cheddar, cebolla caramelizada, rodajas de tomate y lechuga orgánica.',
+  'american burger': 'Doble burger, doble cheddar, bacon, aros de cebolla, rodajas de tomate y lechuga orgánica.',
+  'hawaiian burger': 'Burger, triple queso edam, rodaja de piña, tocino, rodajas de tomate y lechuga orgánica.',
+  'filete clasico': 'Pollo, rodajas de tomate y lechuga orgánica.',
+  'filete crispy': 'Filete crujiente, rodajas de tomate y lechuga orgánica.',
+  'filete con queso': 'Pollo, doble queso, rodajas de tomate y lechuga orgánica.',
+  'filete royal': 'Filete, queso edam, huevo, rodajas de tomate y lechuga orgánica.',
+  'filete royal americana': 'Pollo, huevo frito, queso edam, jamón americano, rodajas de tomate y lechuga.',
+  'filete con todo': 'Filete, queso edam, huevo, jamón, tocino, rodajas de tomate y lechuga orgánica.',
+  'chorizo clasico': 'Chorizo, rodajas de tomate y lechuga orgánica.',
+  'chorizo con queso': 'Chorizo, doble queso edam, rodajas de tomate y lechuga orgánica.',
+  'chorizo royal': 'Chorizo, huevo frito, queso edam, rodajas de tomate y lechuga orgánica.',
+  'chorizo americano': 'Chorizo, huevo frito, queso edam, jamón americano, rodajas de tomate y lechuga orgánica.',
+  'hot dog clasico': 'Hot dog, rodajas de tomate y lechuga orgánica.',
+  'hot dog royal': 'Hot dog, huevo frito, queso edam, jamón americano, rodajas de tomate y lechuga orgánica.',
+  'salchipapa clasica': 'Hot dog y papas. (Táper S/. 1.00)',
+  'salchi pobre': 'Hot dog, 2 huevos y papas. (Táper S/. 1.00)',
+  'chori papa': 'Chorizo y papas. (Táper S/. 1.00)',
+  'chicken crispy': 'Trozos de pollo crujiente y papas. (Táper S/. 1.00)',
+  'salchipollo': 'Filete de pollo, hot dog y papas. (Táper S/. 1.00)',
+  'salchipollo crispy': 'Hot dog, pollo crispy y papas. (Táper S/. 1.00)',
+  'salchi burger': 'Hamburguesa, hot dog, 2 huevos, queso y papas. (Táper S/. 1.00)',
+  'salchi pollo real': 'Hot dog, filete, chorizo, 2 huevos, queso y papas. (Táper S/. 1.00)',
+  'camionero': 'Hot dog, filete, hamburguesa, chorizo, 2 huevos, queso y papas. (Táper S/. 1.00)',
+  'tequenos de queso': 'Deliciosos tequeños rellenos de queso, doraditos y crujientes.',
+  'tequenos de queso con jamon': 'Rellenos de queso y jamón, una combinación clásica que nunca falla.',
+  'tequenos de queso con hot dog': 'Queso derretido con hot dog, el favorito de todos.',
+  'tequenos de lomo saltado': 'Rellenos con lomo saltado, sabor peruano en cada bocado.',
+  'iced tea del campo': 'Infusión de cedrón, eucalipto, linaza, hierba luisa, manzanilla y limón.',
+  'iced tea con naranja y limon': 'Infusión de té con naranja y limón.',
+  'iced tea fresa con arandanos': 'Infusión de té con fresa y arándanos.',
+  'iced tea fresa con naranja': 'Infusión de té con zumo de naranja y fresa.',
+  'iced coffee latte': 'Leche con un shot de café acompañado de crema batida.',
+  'chocolate helado': 'Acompañado de crema batida, fudge de chocolate y marshmallows.',
+  'alitas hot wings': 'Alitas broaster picantes. (Táper S/. 1.00)',
+  'alitas diablas': 'Alitas en salsa extra picante 🌶️. (Táper S/. 1.00)',
+};
+
+const alitasOrderGroup = (dishName: string) => {
+  const value = normalizeText(dishName);
+  if (value.includes('alitas familiar')) return 3;
+  if (value.includes('trio')) return 2;
+  if (value.includes('duo')) return 1;
+  return 0;
+};
+
+const cleanDishDescription = (value?: string) => value
+  ?.replace(/\s*\(Táper S\/\.\s*\d+(?:[.,]\d+)?\)\.?$/i, '')
+  .trim();
 
 const sanitizeCategories = (items: Category[]) => items
   .filter(category => !isExcludedCategory(category.nombre) && !isExcludedCategory(category.id))
-  .map(category => ({
-    ...category,
-    items: category.items
+  .flatMap(category => {
+    const categoryWithAddOns = {
+      ...category,
+      addOns: category.addOns === undefined ? getFallbackAddOns(category) : category.addOns,
+    };
+    const normalizedCategory = normalizeText(`${category.id} ${category.nombre}`);
+    const cleanItems = category.items
       .filter(dish => !isWaffleRelated(`${dish.nombre} ${dish.descripcion || ''}`) && !isExcludedDish(dish.nombre))
       .map(dish => ({
         ...dish,
-        imagen: LOCAL_IMAGES[dish.nombre] || dish.imagen,
-      })),
-  }))
-  .filter(category => category.items.length > 0);
+        descripcion: cleanDishDescription(dish.descripcion?.trim() || DESCRIPTION_OVERRIDES[normalizeText(dish.nombre)]),
+        imagen: dish.imagen?.trim() || LOCAL_IMAGES[dish.nombre],
+      }));
 
-const isCustomizableCategory = (categoryId: string, categoryNombre?: string) => {
-  const normId = categoryId.toLowerCase();
-  const normName = (categoryNombre || '').toLowerCase();
-  return (
-    normId.includes('hamburguesa') ||
-    normId.includes('filete') ||
-    normId.includes('chorizo') ||
-    normId.includes('hotdog') ||
-    normId.includes('salchipapa') ||
-    normName.includes('hamburguesa') ||
-    normName.includes('filete') ||
-    normName.includes('chorizo') ||
-    normName.includes('hot dog') ||
-    normName.includes('salchipapa')
-  );
-};
+    if (normalizedCategory.includes('alitas')) {
+      cleanItems.sort((a, b) => alitasOrderGroup(a.nombre) - alitasOrderGroup(b.nombre));
+    }
+
+    if (normalizedCategory.includes('chorizo') && (normalizedCategory.includes('hot dog') || normalizedCategory.includes('hotdog'))) {
+      return [
+        { ...categoryWithAddOns, id: 'chorizos', nombre: 'Chorizos', items: cleanItems.filter(dish => !normalizeText(dish.nombre).includes('hot dog')) },
+        { ...categoryWithAddOns, id: 'hot-dogs', nombre: 'Hot dogs', items: cleanItems.filter(dish => normalizeText(dish.nombre).includes('hot dog')) },
+      ];
+    }
+
+    if (normalizedCategory.includes('bebidas heladas') || normalizedCategory.includes('gaseosas')) {
+      return [{ ...categoryWithAddOns, id: 'bebidas-heladas', nombre: 'Gaseosas', items: cleanItems }];
+    }
+
+    return [{ ...categoryWithAddOns, items: cleanItems }];
+  })
+  .filter(category => category.items.length > 0);
 
 const isDrinkOrAgregado = (nombre: string, categoriaId?: string) => {
   const normCat = (categoriaId || '').toLowerCase();
@@ -317,9 +452,28 @@ const isDrinkOrAgregado = (nombre: string, categoriaId?: string) => {
   return false;
 };
 
-const getItemDeliveryFee = (item: { nombre: string; categoriaId?: string }) => {
+const isSandwichCategory = (categoriaId?: string) => {
+  const value = normalizeText(categoriaId || '');
+  return ['hamburguesa', 'filete', 'chorizo', 'hot-dog', 'hotdog'].some(category => value.includes(category));
+};
+
+const getItemDeliveryFee = (item: { nombre: string; categoriaId?: string; deliveryPrice?: number | null }) => {
+  if (item.deliveryPrice !== undefined) {
+    return item.deliveryPrice ?? 0;
+  }
+
   const normName = item.nombre.toLowerCase().trim();
   const normCat = (item.categoriaId || '').toLowerCase().trim();
+
+  // Los sánguches y los tequeños no pagan táper.
+  if (
+    isSandwichCategory(item.categoriaId) ||
+    normCat.includes('tequeno') ||
+    normCat.includes('tequeño') ||
+    normName.includes('tequeño')
+  ) {
+    return 0;
+  }
 
   // 1. Reglas específicas de S/. 2.00 de táper:
   // - Trío de alitas y Alitas familiar
@@ -377,13 +531,22 @@ const getItemDeliveryFee = (item: { nombre: string; categoriaId?: string }) => {
   ) {
     return 1;
   }
-  // - Demás platos de comida: Hamburguesas, Filetes, Chorizos/Hot dogs, Tequeños (1 sol)
+  // - Demás platos de comida (1 sol)
   return 1;
 };
 
 const getDishUnitPrice = (precio: string) => {
   const priceMatch = precio.match(/\d+(?:[.,]\d+)?/);
   return Number.parseFloat((priceMatch?.[0] || '0').replace(',', '.')) || 0;
+};
+
+const isJuiceCategory = (category: Category) => normalizeText(`${category.id} ${category.nombre}`).includes('jugo');
+const isShakeCategory = (category: Category) => normalizeText(`${category.id} ${category.nombre}`).includes('batido');
+const getJuiceOption = (category: Category, withMilk: boolean) => {
+  const options = getCategoryAddOnOptions(category, JUGO_AGREGADOS);
+  return options.find(option => normalizeText(option.nombre).includes(withMilk ? 'con leche' : 'sin leche'))
+    || options[withMilk ? 1 : 0]
+    || JUGO_AGREGADOS[withMilk ? 1 : 0];
 };
 
 const fieldClass = 'w-full rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/30 focus:border-[#ff9d16] focus:bg-white/[0.09]';
@@ -414,6 +577,10 @@ export default function App() {
   const [selectedCremas, setSelectedCremas] = useState<string[]>(CREMAS_DISPONIBLES.map(c => c.nombre));
   const [dishComment, setDishComment] = useState('');
   const [dishQuantity, setDishQuantity] = useState(1);
+  const [configuringBeverage, setConfiguringBeverage] = useState<{ dish: Dish; category: Category; type: 'juice' | 'shake' } | null>(null);
+  const [withMilk, setWithMilk] = useState(false);
+  const [selectedTopping, setSelectedTopping] = useState<string | null>(null);
+  const [beverageQuantity, setBeverageQuantity] = useState(1);
   const [configuringAlitas, setConfiguringAlitas] = useState<{ dish: Dish; category: Category; maxFlavors: number } | null>(null);
   const [selectedSabores, setSelectedSabores] = useState<string[]>([]);
   const [alitasComment, setAlitasComment] = useState('');
@@ -432,18 +599,21 @@ export default function App() {
           fetchSheetData<SheetCategory>('Categorías'),
           fetchSheetData<SheetDish>('Platos'),
         ]);
-        if (cats.length === 0 && dishes.length === 0) {
+        if (cats.length === 0 || dishes.length === 0) {
           const cleanCategories = sanitizeCategories(DEFAULT_MENU_DATA);
           setCategories(cleanCategories);
           setActiveCategory(cleanCategories[0]?.id ?? null);
           return;
         }
         const formattedCategories: Category[] = cats.map(category => ({
-          id: category.nombre.toLowerCase().replace(/\s+/g, '-'),
-          nombre: category.nombre,
-          items: dishes.filter(dish => dish.categoría === category.nombre).map(dish => ({
-            nombre: dish['nombre del plato'], descripcion: dish.descripción, precio: dish.precio,
-            imagen: LOCAL_IMAGES[dish['nombre del plato']] || dish['URL de imagen'] || undefined,
+          id: slugify(category.nombre),
+          nombre: category.nombre.trim(),
+          deliveryPrice: parseDeliveryPrice(category['precio por delivery']),
+          items: dishes.filter(dish => normalizeText(dish.categoría) === normalizeText(category.nombre)).map(dish => ({
+            nombre: dish['nombre del plato']?.trim(),
+            descripcion: dish.descripción?.trim() || undefined,
+            precio: dish.precio?.trim(),
+            imagen: dish['URL de imagen']?.trim() || undefined,
           })),
         }));
         const cleanCategories = sanitizeCategories(formattedCategories);
@@ -474,9 +644,9 @@ export default function App() {
     return total + numericPrice * item.cantidad;
   }, 0);
 
-  const calculateDeliveryFee = () => cart.reduce((total, item) => {
+  const calculateDeliveryFee = () => orderType === 'delivery' ? cart.reduce((total, item) => {
     return total + getItemDeliveryFee(item) * item.cantidad;
-  }, 0);
+  }, 0) : 0;
 
   const calculateTotal = () => calculateSubtotal() + calculateDeliveryFee();
 
@@ -487,14 +657,71 @@ export default function App() {
       setSelectedSabores([]);
       setAlitasComment('');
       setAlitasQuantity(1);
-    } else if (isCustomizableCategory(cat.id, cat.nombre)) {
+    } else if (isJuiceCategory(cat)) {
+      setConfiguringBeverage({ dish, category: cat, type: 'juice' });
+      setWithMilk(false);
+      setSelectedTopping(null);
+      setBeverageQuantity(1);
+    } else if (isShakeCategory(cat)) {
+      setConfiguringBeverage({ dish, category: cat, type: 'shake' });
+      setWithMilk(false);
+      setSelectedTopping(null);
+      setBeverageQuantity(1);
+    } else if (cat.addOns?.selectionType === 'multiple') {
       setConfiguringDish({ dish, category: cat });
-      setSelectedCremas(CREMAS_DISPONIBLES.map(c => c.nombre));
+      setSelectedCremas(getCategoryAddOnOptions(cat, CREMAS_DISPONIBLES).map(option => option.nombre));
       setDishComment('');
       setDishQuantity(1);
     } else {
       addToCartDirect(dish, cat);
     }
+  };
+
+  const confirmConfiguredBeverage = () => {
+    if (!configuringBeverage) return;
+    if (configuringBeverage.type === 'shake' && !selectedTopping) return;
+
+    const { dish, category, type } = configuringBeverage;
+    const milkSelection = type === 'juice' ? withMilk : undefined;
+    const toppingSelection = type === 'shake' ? selectedTopping || undefined : undefined;
+    const selectedOption = type === 'juice'
+      ? getJuiceOption(category, withMilk)
+      : getCategoryAddOnOptions(category, BATIDO_AGREGADOS).find(option => option.nombre === selectedTopping);
+    const agregadoPrecio = selectedOption?.precio || 0;
+    const unitPrice = getDishUnitPrice(dish.precio) + agregadoPrecio;
+    const configuredPrice = `S/. ${unitPrice.toFixed(2)}`;
+
+    setCart(current => {
+      const existing = current.find(item =>
+        item.nombre === dish.nombre &&
+        item.precio === configuredPrice &&
+        item.isCustomizable &&
+        item.conLeche === milkSelection &&
+        item.topping === toppingSelection
+      );
+
+      if (existing) {
+        return current.map(item => item.id === existing.id ? { ...item, cantidad: item.cantidad + beverageQuantity } : item);
+      }
+
+      return [
+        ...current,
+        {
+          id: `${dish.nombre}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+          nombre: dish.nombre,
+          precio: configuredPrice,
+          cantidad: beverageQuantity,
+          categoriaId: category.id,
+          deliveryPrice: category.deliveryPrice,
+          conLeche: milkSelection,
+          topping: toppingSelection,
+          agregadoPrecio,
+          isCustomizable: true,
+        },
+      ];
+    });
+
+    setConfiguringBeverage(null);
   };
 
   const confirmConfiguredAlitas = () => {
@@ -525,6 +752,7 @@ export default function App() {
           precio: dish.precio,
           cantidad: alitasQuantity,
           categoriaId: configuringAlitas.category.id,
+          deliveryPrice: configuringAlitas.category.deliveryPrice,
           sabores: sortedSabores,
           comentario: cleanComment,
           isCustomizable: true,
@@ -544,6 +772,7 @@ export default function App() {
       precio: dish.precio,
       cantidad: 1,
       categoriaId: cat?.id,
+      deliveryPrice: cat?.deliveryPrice,
       isCustomizable: false,
     }];
   });
@@ -575,6 +804,7 @@ export default function App() {
           precio: dish.precio,
           cantidad: dishQuantity,
           categoriaId: configuringDish.category.id,
+          deliveryPrice: configuringDish.category.deliveryPrice,
           cremas: sortedCremas,
           comentario: cleanComment,
           isCustomizable: true,
@@ -589,7 +819,9 @@ export default function App() {
     setSelectedCremas(current =>
       current.includes(cremaNombre)
         ? current.filter(c => c !== cremaNombre)
-        : [...current, cremaNombre]
+        : configuringDish?.category.addOns?.maxSelections && current.length >= configuringDish.category.addOns.maxSelections
+          ? current
+          : [...current, cremaNombre]
     );
   };
 
@@ -661,6 +893,13 @@ export default function App() {
             message += `   └ *Cremas:* Sin cremas\n`;
           }
         }
+        if (typeof item.conLeche === 'boolean') {
+          const extra = item.agregadoPrecio || 0;
+          message += `   └ *Leche:* ${item.conLeche ? `Con leche (+S/. ${extra.toFixed(2)})` : 'Sin leche (gratis)'}\n`;
+        }
+        if (item.topping) {
+          message += `   └ *Topping:* ${item.topping}\n`;
+        }
         if (item.comentario && item.comentario.trim()) {
           message += `   └ *Nota:* ${item.comentario.trim()}\n`;
         }
@@ -668,8 +907,9 @@ export default function App() {
     });
 
     message += `\n📋 *Subtotal productos:* S/. ${subtotal.toFixed(2)}\n`;
-    const concepto = orderType === 'delivery' ? 'Táper / Empaque delivery' : 'Táper para llevar';
-    message += `📦 *${concepto}:* S/. ${deliveryFee.toFixed(2)}\n`;
+    if (deliveryFee > 0) {
+      message += `📦 *Precio por delivery:* S/. ${deliveryFee.toFixed(2)}\n`;
+    }
     message += `💰 *TOTAL A PAGAR: S/. ${total.toFixed(2)}*\n\n`;
 
     if (orderType === 'delivery') {
@@ -687,7 +927,7 @@ export default function App() {
   const handleBirthdaySubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setIsSubmittingBirthday(true);
-    const success = await submitSheetData('Cumpleaños', {
+    const success = await submitSheetData('Fidelización', {
       timestamp: new Date().toLocaleString('es-PE'), ...birthdayData, correo: birthdayData.correo || 'No indicado',
     });
     setIsSubmittingBirthday(false);
@@ -716,6 +956,22 @@ export default function App() {
       }, 2500);
     } else window.alert('Hubo un error al enviar tu reseña. Por favor, inténtalo de nuevo.');
   };
+
+  const currentCreamOptions = configuringDish
+    ? getCategoryAddOnOptions(configuringDish.category, CREMAS_DISPONIBLES)
+    : CREMAS_DISPONIBLES;
+  const currentJuiceOptions = configuringBeverage?.type === 'juice'
+    ? getCategoryAddOnOptions(configuringBeverage.category, JUGO_AGREGADOS)
+    : JUGO_AGREGADOS;
+  const currentShakeOptions = configuringBeverage?.type === 'shake'
+    ? getCategoryAddOnOptions(configuringBeverage.category, BATIDO_AGREGADOS)
+    : BATIDO_AGREGADOS;
+  const currentAlitasOptions = configuringAlitas
+    ? getCategoryAddOnOptions(configuringAlitas.category, ALITAS_SABORES)
+    : ALITAS_SABORES;
+  const currentBeverageAddOnPrice = configuringBeverage?.type === 'juice'
+    ? getJuiceOption(configuringBeverage.category, withMilk).precio
+    : currentShakeOptions.find(option => option.nombre === selectedTopping)?.precio || 0;
 
   if (loading) return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-[#090806] text-[#ff9d16]">
@@ -766,7 +1022,7 @@ export default function App() {
       </div>
 
       <div className="relative z-10 px-4 pb-3">
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-3 gap-2">
           <motion.a
             href={INSTAGRAM_URL}
             target="_blank"
@@ -784,6 +1040,15 @@ export default function App() {
             className="social-button social-facebook"
           >
             <Facebook size={18} /> Facebook
+          </motion.a>
+          <motion.a
+            href={TIKTOK_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            whileTap={{ scale: 0.96 }}
+            className="social-button social-tiktok"
+          >
+            <TikTokIcon size={18} /> TikTok
           </motion.a>
         </div>
       </div>
@@ -807,36 +1072,16 @@ export default function App() {
                   <Utensils size={20} className="wave-icon text-[#ff9d16]" />
                   <h3 className="category-underline font-category text-[27px] font-bold leading-none text-white">{category.nombre}</h3>
                 </div>
-                {category.id === 'alitas' && (
+                {typeof category.deliveryPrice === 'number' && category.deliveryPrice > 0 && (
                   <span className="rounded-full border border-[#ff9d16]/30 bg-[#ff9d16]/10 px-2.5 py-1 text-[9px] font-black uppercase tracking-wider text-[#ffad26]">
-                    📦 Táper S/. 1.00 · Trío S/. 2.00
-                  </span>
-                )}
-                {category.id === 'salchipapas' && (
-                  <span className="rounded-full border border-[#ff9d16]/30 bg-[#ff9d16]/10 px-2.5 py-1 text-[9px] font-black uppercase tracking-wider text-[#ffad26]">
-                    📦 Táper S/. 1.00
-                  </span>
-                )}
-                {category.id === 'broaster' && (
-                  <span className="rounded-full border border-[#ff9d16]/30 bg-[#ff9d16]/10 px-2.5 py-1 text-[9px] font-black uppercase tracking-wider text-[#ffad26]">
-                    📦 Táper S/. 1.00 / S/. 2.00
-                  </span>
-                )}
-                {(category.id === 'criollos' || category.id === 'especiales') && (
-                  <span className="rounded-full border border-[#ff9d16]/30 bg-[#ff9d16]/10 px-2.5 py-1 text-[9px] font-black uppercase tracking-wider text-[#ffad26]">
-                    📦 Táper S/. 1.00
-                  </span>
-                )}
-                {category.id === 'guarniciones' && (
-                  <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[9px] font-black uppercase tracking-wider text-emerald-400">
-                    Sin costo de táper
+                    📦 Delivery S/. {category.deliveryPrice.toFixed(2)}
                   </span>
                 )}
               </div>
             </div>
             <div className="space-y-3">{category.items.map((dish, index) => (
               <motion.article key={`${dish.nombre}-${dish.precio}`} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-30px' }} transition={{ delay: Math.min(index * 0.025, 0.15) }} className="menu-dish-row relative flex min-h-[126px] overflow-hidden rounded-[1.35rem] border border-white/[0.09] bg-gradient-to-br from-[#1b1915] to-[#11100e] shadow-[0_14px_30px_rgba(0,0,0,.22)]">
-                <div className="flex min-w-0 flex-1 flex-col p-4 pr-2 cursor-pointer" onClick={() => handleDishClick(dish, category)}><div className="flex items-start gap-2"><h4 className="font-dish text-[13px] font-black uppercase leading-[1.08] tracking-wide text-white">{dish.nombre}</h4><span className="mt-2.5 min-w-3 flex-1 border-t border-dotted border-[#ff9d16]/35" /></div>{dish.descripcion && <p className="mt-2 line-clamp-3 pr-1 text-[10px] leading-[1.35] text-white/52">{dish.descripcion}</p>}<div className="flex-1" /><div className="mt-3 flex flex-wrap items-center gap-2"><span className="rounded-lg bg-[#ff9d16] px-2.5 py-1 font-dish text-[12px] font-black text-[#1a0f05]">{dish.precio}</span>{getMaxAlitasFlavors(dish.nombre) > 0 ? <span className="rounded-md border border-[#ff9d16]/30 bg-[#ff9d16]/10 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider text-[#ffb13a]">{getMaxAlitasFlavors(dish.nombre)} Sabores</span> : isCustomizableCategory(category.id, category.nombre) ? <span className="rounded-md border border-[#ff9d16]/30 bg-[#ff9d16]/10 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider text-[#ffb13a]">Cremas</span> : null}{getItemDeliveryFee({ nombre: dish.nombre, categoriaId: category.id }) > 0 && <span className="rounded-md border border-white/10 bg-white/5 px-1.5 py-0.5 text-[8px] font-bold text-white/70">📦 Táper S/. {getItemDeliveryFee({ nombre: dish.nombre, categoriaId: category.id })}</span>}<motion.button type="button" onClick={(e) => { e.stopPropagation(); handleDishClick(dish, category); }} whileTap={{ scale: 0.78 }} aria-label={`Agregar ${dish.nombre} al pedido`} className="flex h-8 w-8 items-center justify-center rounded-full border border-[#ff9d16]/40 bg-[#ff9d16]/10 text-[#ffab2e] transition hover:bg-[#ff9d16] hover:text-black"><Plus size={16} strokeWidth={3} /></motion.button></div></div>
+                <div className="flex min-w-0 flex-1 flex-col p-4 pr-2 cursor-pointer" onClick={() => handleDishClick(dish, category)}><div className="flex items-start gap-2"><h4 className="font-dish text-[13px] font-black uppercase leading-[1.08] tracking-wide text-white">{dish.nombre}</h4><span className="mt-2.5 min-w-3 flex-1 border-t border-dotted border-[#ff9d16]/35" /></div>{dish.descripcion && <p className="mt-2 line-clamp-3 pr-1 text-[10px] leading-[1.35] text-white/52">{dish.descripcion}</p>}<div className="flex-1" /><div className="mt-3 flex flex-wrap items-center gap-2"><span className="rounded-lg bg-[#ff9d16] px-2.5 py-1 font-dish text-[12px] font-black text-[#1a0f05]">{dish.precio}</span>{getMaxAlitasFlavors(dish.nombre) > 0 ? <span className="rounded-md border border-[#ff9d16]/30 bg-[#ff9d16]/10 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider text-[#ffb13a]">{getMaxAlitasFlavors(dish.nombre)} Sabores</span> : category.addOns ? <span className="rounded-md border border-[#ff9d16]/30 bg-[#ff9d16]/10 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider text-[#ffb13a]">{category.addOns.selectionType === 'multiple' ? 'Cremas' : 'Personalizable'}</span> : null}{getItemDeliveryFee({ nombre: dish.nombre, categoriaId: category.id, deliveryPrice: category.deliveryPrice }) > 0 && <span className="rounded-md border border-white/10 bg-white/5 px-1.5 py-0.5 text-[8px] font-bold text-white/70">📦 Delivery S/. {getItemDeliveryFee({ nombre: dish.nombre, categoriaId: category.id, deliveryPrice: category.deliveryPrice }).toFixed(2)}</span>}<motion.button type="button" onClick={(e) => { e.stopPropagation(); handleDishClick(dish, category); }} whileTap={{ scale: 0.78 }} aria-label={`Agregar ${dish.nombre} al pedido`} className="flex h-8 w-8 items-center justify-center rounded-full border border-[#ff9d16]/40 bg-[#ff9d16]/10 text-[#ffab2e] transition hover:bg-[#ff9d16] hover:text-black"><Plus size={16} strokeWidth={3} /></motion.button></div></div>
                 <button type="button" onClick={() => dish.imagen && setSelectedImage(dish.imagen)} className="dish-visual relative flex w-[33%] min-w-[108px] items-center justify-center overflow-hidden border-l border-[#ff9d16]/15" aria-label={dish.imagen ? `Ampliar imagen de ${dish.nombre}` : undefined}>
                   {dish.imagen ? <img src={dish.imagen} alt={dish.nombre} loading="lazy" className="h-full w-full object-cover transition duration-500 hover:scale-110" /> : <span className="relative flex flex-col items-center text-center"><span className="mb-2 flex h-10 w-10 items-center justify-center rounded-full border border-[#ff9d16]/25 bg-black/25 text-[#ff9d16]"><Utensils size={18} /></span><span className="text-[8px] font-black uppercase leading-snug tracking-[0.15em] text-[#ffc05c]/70">Preparado<br />al momento</span></span>}
                 </button>
@@ -866,9 +1111,10 @@ export default function App() {
               <span><small>Horario de atención</small>{STORE_HOURS}</span>
             </div>
           </div>
-          <div className="mt-3 grid w-full grid-cols-2 gap-2">
+          <div className="mt-3 grid w-full grid-cols-3 gap-2">
             <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="social-button social-instagram"><Instagram size={18} /> Instagram</a>
             <a href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer" className="social-button social-facebook"><Facebook size={18} /> Facebook</a>
+            <a href={TIKTOK_URL} target="_blank" rel="noopener noreferrer" className="social-button social-tiktok"><TikTokIcon size={18} /> TikTok</a>
           </div>
           <p className="mt-6 text-[10px] font-bold uppercase tracking-[0.16em] text-white/35">© 2026 · La Real Burger</p>
           <a href="https://tymasolutions.lat/" target="_blank" rel="noopener noreferrer" className="mt-4 text-[11px] font-bold text-white/35 transition hover:text-white/70">Hecho por <span className="text-[#31b9ff]">Tyma Solutions</span></a>
@@ -918,6 +1164,18 @@ export default function App() {
                           )}
                         </div>
                       )}
+                      {typeof item.conLeche === 'boolean' && (
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <span className="font-bold uppercase tracking-wider text-[#ff9d16]">Leche:</span>
+                          <span className="text-white/85">{item.conLeche ? `Con leche (+S/. ${(item.agregadoPrecio || 0).toFixed(2)})` : 'Sin leche (gratis)'}</span>
+                        </div>
+                      )}
+                      {item.topping && (
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <span className="font-bold uppercase tracking-wider text-[#ff9d16]">Topping:</span>
+                          <span className="text-white/85">{item.topping}</span>
+                        </div>
+                      )}
                       {item.comentario && (
                         <div className="flex items-start gap-1 text-white/75">
                           <span className="font-bold text-orange-200/60">Nota:</span>
@@ -934,22 +1192,21 @@ export default function App() {
                 <span>Subtotal platos</span>
                 <span className="font-dish font-bold text-white">S/. {calculateSubtotal().toFixed(2)}</span>
               </div>
-              <div className="flex items-center justify-between text-white/65">
-                <span className="flex items-center gap-1.5">
-                  <ShoppingBag size={14} className="text-[#ff9d16]" />
-                  <span>Costo de táper / empaque</span>
-                </span>
-                <span className="font-dish font-bold text-[#ffad26]">
-                  {calculateDeliveryFee() > 0 ? `+ S/. ${calculateDeliveryFee().toFixed(2)}` : 'S/. 0.00'}
-                </span>
-              </div>
+              {calculateDeliveryFee() > 0 && (
+                <div className="flex items-center justify-between text-white/65">
+                  <span className="flex items-center gap-1.5">
+                    <ShoppingBag size={14} className="text-[#ff9d16]" />
+                    <span>Precio por delivery</span>
+                  </span>
+                  <span className="font-dish font-bold text-[#ffad26]">
+                    + S/. {calculateDeliveryFee().toFixed(2)}
+                  </span>
+                </div>
+              )}
               <div className="flex items-center justify-between border-t border-white/[0.08] pt-2.5 text-sm">
                 <span className="font-bold text-white">Total a pagar</span>
                 <span className="font-dish text-2xl font-black text-[#ff9d16]">S/. {calculateTotal().toFixed(2)}</span>
               </div>
-              <p className="text-[9px] leading-snug text-white/40">
-                * Costo de táper: S/. 1.00 en Salchipapas, Alitas (individuales y dúo), Criollos, Mostrito, Combo 1 y demás platos de comida; S/. 2.00 en Trío de alitas, Alitas familiar, Combo Broaster 2 y 3. Guarniciones y bebidas no pagan táper.
-              </p>
             </div>
             <button type="button" onClick={() => { setShowSummary(false); setShowCheckout(true); }} className="brand-button w-full py-4">Elegir entrega y enviar <ChevronRight size={19} /></button>
           </motion.div>
@@ -980,9 +1237,11 @@ export default function App() {
                     <span className="font-dish text-sm font-black text-[#ffad26]">
                       {configuringDish.dish.precio} c/u
                     </span>
-                    <span className="rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-bold text-white/70">
-                      📦 Táper: S/. {getItemDeliveryFee({ nombre: configuringDish.dish.nombre, categoriaId: configuringDish.category.id }).toFixed(2)}
-                    </span>
+                    {getItemDeliveryFee({ nombre: configuringDish.dish.nombre, categoriaId: configuringDish.category.id, deliveryPrice: configuringDish.category.deliveryPrice }) > 0 && (
+                      <span className="rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-bold text-white/70">
+                        📦 Delivery: S/. {getItemDeliveryFee({ nombre: configuringDish.dish.nombre, categoriaId: configuringDish.category.id, deliveryPrice: configuringDish.category.deliveryPrice }).toFixed(2)}
+                      </span>
+                    )}
                   </div>
                 </div>
                 <button
@@ -1000,19 +1259,19 @@ export default function App() {
                 <div className="mb-2.5 flex items-center justify-between">
                   <div>
                     <label className="block text-[11px] font-black uppercase tracking-[0.14em] text-white/85">
-                      Elige tus cremas
+                      {configuringDish.category.addOns?.title || 'Elige tus cremas'}
                     </label>
                     <span className="text-[9px] font-semibold text-white/45">
                       {selectedCremas.length === 0
                         ? 'Sin cremas seleccionadas'
-                        : `${selectedCremas.length} de ${CREMAS_DISPONIBLES.length} seleccionadas`}
+                        : `${selectedCremas.length} de ${currentCreamOptions.length} seleccionadas`}
                     </span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <button
                       type="button"
-                      onClick={() => setSelectedCremas(CREMAS_DISPONIBLES.map(c => c.nombre))}
-                      className={`crema-quick-btn ${selectedCremas.length === CREMAS_DISPONIBLES.length ? 'active' : ''}`}
+                      onClick={() => setSelectedCremas(currentCreamOptions.map(option => option.nombre))}
+                      className={`crema-quick-btn ${selectedCremas.length === currentCreamOptions.length ? 'active' : ''}`}
                     >
                       Todas
                     </button>
@@ -1027,7 +1286,7 @@ export default function App() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
-                  {CREMAS_DISPONIBLES.map(crema => {
+                  {currentCreamOptions.map(crema => {
                     const isSelected = selectedCremas.includes(crema.nombre);
                     return (
                       <button
@@ -1037,7 +1296,7 @@ export default function App() {
                         className={`crema-chip ${isSelected ? 'selected' : ''}`}
                       >
                         <div className="flex items-center gap-2">
-                          <span className="text-base">{crema.emoji}</span>
+                          {crema.emoji && <span className="text-base">{crema.emoji}</span>}
                           <span className="text-xs font-bold">{crema.nombre}</span>
                         </div>
                         <div
@@ -1111,6 +1370,134 @@ export default function App() {
         )}
       </AnimatePresence>
 
+      {/* Modal de leche para jugos y topping para batidos */}
+      <AnimatePresence>
+        {configuringBeverage && (
+          <div className="modal-backdrop fixed inset-0 z-[65] flex items-end justify-center p-0 sm:items-center sm:p-4">
+            <motion.div
+              initial={{ y: '100%', opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: '100%', opacity: 0 }}
+              transition={{ type: 'spring', damping: 28, stiffness: 260 }}
+              className="modal-panel max-h-[92vh] w-full max-w-md overflow-y-auto rounded-t-[2rem] border border-[#ff9d16]/30 p-5 shadow-2xl sm:rounded-[2rem]"
+            >
+              <div className="mb-4 flex items-center justify-between border-b border-white/[0.08] pb-3">
+                <div className="min-w-0 pr-3">
+                  <div className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-[0.2em] text-[#ff9d16]">
+                    <SlidersHorizontal size={13} />
+                    <span>Personaliza tu bebida</span>
+                  </div>
+                  <h2 className="truncate font-title text-2xl text-white sm:text-[26px]">
+                    {configuringBeverage.dish.nombre}
+                  </h2>
+                  <span className="font-dish text-sm font-black text-[#ffad26]">
+                    Desde {configuringBeverage.dish.precio}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setConfiguringBeverage(null)}
+                  className="modal-close"
+                  aria-label="Cerrar personalización de bebida"
+                >
+                  <X size={19} />
+                </button>
+              </div>
+
+              {configuringBeverage.type === 'juice' ? (
+                <div className="mb-6">
+                  <label className="mb-1 block text-[11px] font-black uppercase tracking-[0.14em] text-white/85">
+                    {configuringBeverage.category.addOns?.title || 'Elige tu preparación'}
+                  </label>
+                  <p className="mb-3 text-[10px] text-white/45">Selecciona una opción para tu jugo.</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {currentJuiceOptions.map(option => {
+                      const optionWithMilk = normalizeText(option.nombre).includes('con leche');
+                      const isSelected = withMilk === optionWithMilk;
+                      return (
+                        <button
+                          key={option.id}
+                          type="button"
+                          aria-pressed={isSelected}
+                          onClick={() => setWithMilk(optionWithMilk)}
+                          className={`crema-chip ${isSelected ? 'selected' : ''}`}
+                        >
+                          <div className="text-left">
+                            <div className="text-xs font-black">{option.nombre}</div>
+                            <div className="mt-0.5 text-[9px] text-white/50">
+                              {option.precio > 0 ? `+ S/. ${option.precio.toFixed(2)}` : 'Gratis'}
+                            </div>
+                          </div>
+                          {isSelected && <Check size={16} strokeWidth={3.5} />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : (
+                <div className="mb-6">
+                  <label className="mb-1 block text-[11px] font-black uppercase tracking-[0.14em] text-white/85">
+                    {configuringBeverage.category.addOns?.title || 'Elige 1 topping'}
+                  </label>
+                  <p className="mb-3 text-[10px] text-white/45">Incluido en el precio.</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {currentShakeOptions.map(option => {
+                      const isSelected = selectedTopping === option.nombre;
+                      return (
+                        <button
+                          key={option.id}
+                          type="button"
+                          aria-pressed={isSelected}
+                          onClick={() => setSelectedTopping(option.nombre)}
+                          className={`crema-chip ${isSelected ? 'selected' : ''}`}
+                        >
+                          <span className="text-xs font-black">{option.nombre}</span>
+                          {isSelected && <Check size={16} strokeWidth={3.5} />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              <div className="flex items-center gap-3 border-t border-white/[0.08] pt-4">
+                <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-black/40 px-3 py-2">
+                  <button
+                    type="button"
+                    onClick={() => setBeverageQuantity(q => Math.max(1, q - 1))}
+                    disabled={beverageQuantity <= 1}
+                    className="p-1 text-white/60 hover:text-[#ff9d16] disabled:opacity-30"
+                    aria-label="Disminuir cantidad"
+                  >
+                    <Minus size={16} />
+                  </button>
+                  <span className="w-5 text-center font-dish text-sm font-black text-white">{beverageQuantity}</span>
+                  <button
+                    type="button"
+                    onClick={() => setBeverageQuantity(q => q + 1)}
+                    className="p-1 text-[#ff9d16] hover:scale-110"
+                    aria-label="Aumentar cantidad"
+                  >
+                    <Plus size={16} />
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  onClick={confirmConfiguredBeverage}
+                  disabled={configuringBeverage.type === 'shake' && !selectedTopping}
+                  className="brand-button flex-1 py-3.5 text-xs font-black disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  <span>Agregar al pedido</span>
+                  <span className="rounded-lg bg-black/20 px-2 py-0.5 text-[11px]">
+                    S/. {((getDishUnitPrice(configuringBeverage.dish.precio) + currentBeverageAddOnPrice) * beverageQuantity).toFixed(2)}
+                  </span>
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       {/* Modal de selección de sabores para alitas (Dúo, Trío, Familiar) */}
       <AnimatePresence>
         {configuringAlitas && (
@@ -1135,9 +1522,11 @@ export default function App() {
                     <span className="font-dish text-sm font-black text-[#ffad26]">
                       {configuringAlitas.dish.precio}
                     </span>
-                    <span className="rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-bold text-white/70">
-                      📦 Táper: S/. {getItemDeliveryFee({ nombre: configuringAlitas.dish.nombre, categoriaId: configuringAlitas.category.id }).toFixed(2)}
-                    </span>
+                    {getItemDeliveryFee({ nombre: configuringAlitas.dish.nombre, categoriaId: configuringAlitas.category.id, deliveryPrice: configuringAlitas.category.deliveryPrice }) > 0 && (
+                      <span className="rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-bold text-white/70">
+                        📦 Delivery: S/. {getItemDeliveryFee({ nombre: configuringAlitas.dish.nombre, categoriaId: configuringAlitas.category.id, deliveryPrice: configuringAlitas.category.deliveryPrice }).toFixed(2)}
+                      </span>
+                    )}
                   </div>
                 </div>
                 <button
@@ -1155,7 +1544,7 @@ export default function App() {
                 <div className="mb-2.5 flex items-center justify-between">
                   <div>
                     <label className="block text-[11px] font-black uppercase tracking-[0.14em] text-white/85">
-                      Elige tus sabores ({configuringAlitas.maxFlavors} permitidos)
+                      {configuringAlitas.category.addOns?.title || 'Elige tus sabores'} ({configuringAlitas.maxFlavors} permitidos)
                     </label>
                     <span className="text-[9px] font-semibold text-white/45">
                       {selectedSabores.length === configuringAlitas.maxFlavors
@@ -1175,7 +1564,7 @@ export default function App() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
-                  {ALITAS_SABORES.map(sabor => {
+                  {currentAlitasOptions.map(sabor => {
                     const isSelected = selectedSabores.includes(sabor.nombre);
                     const isMaxReached = selectedSabores.length >= configuringAlitas.maxFlavors && !isSelected;
                     return (
@@ -1187,7 +1576,7 @@ export default function App() {
                         className={`crema-chip ${isSelected ? 'selected' : ''} ${isMaxReached ? 'opacity-40 cursor-not-allowed' : ''}`}
                       >
                         <div className="flex items-center gap-2">
-                          <span className="text-base">{sabor.emoji}</span>
+                          {sabor.emoji && <span className="text-base">{sabor.emoji}</span>}
                           <span className="text-xs font-bold">{sabor.nombre}</span>
                         </div>
                         <div
@@ -1288,10 +1677,12 @@ export default function App() {
                   <span>Subtotal platos:</span>
                   <span className="font-dish font-bold text-white">S/. {calculateSubtotal().toFixed(2)}</span>
                 </div>
-                <div className="flex items-center justify-between text-white/60">
-                  <span>{orderType === 'delivery' ? '🛵 Táper / empaque delivery:' : '🏪 Táper para llevar:'}</span>
-                  <span className="font-dish font-bold text-[#ffad26]">+ S/. {calculateDeliveryFee().toFixed(2)}</span>
-                </div>
+                {calculateDeliveryFee() > 0 && (
+                  <div className="flex items-center justify-between text-white/60">
+                    <span>🛵 Precio por delivery:</span>
+                    <span className="font-dish font-bold text-[#ffad26]">+ S/. {calculateDeliveryFee().toFixed(2)}</span>
+                  </div>
+                )}
                 <div className="flex items-center justify-between border-t border-white/[0.08] pt-2 text-sm">
                   <span className="font-bold text-white">Total a pagar:</span>
                   <span className="font-dish text-lg font-black text-[#ff9d16]">S/. {calculateTotal().toFixed(2)}</span>

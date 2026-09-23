@@ -355,6 +355,11 @@ a.footer-info-card:hover {
 .social-button:hover { filter: brightness(1.12); transform: translateY(-1px); }
 .social-instagram { background: linear-gradient(120deg, #833ab4, #e1306c 52%, #f77737); }
 .social-facebook { background: linear-gradient(120deg, #0866ff, #1877f2); }
+.social-tiktok {
+  border: 1px solid rgba(255, 255, 255, .14);
+  background: linear-gradient(120deg, #050505 50%, #221018 100%);
+}
+.social-tiktok svg { filter: drop-shadow(-1.5px 0 #25f4ee) drop-shadow(1.5px 0 #fe2c55); }
 
 .pickup-store-card {
   margin-top: 12px;

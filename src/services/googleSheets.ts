@@ -1,7 +1,7 @@
 import Papa from 'papaparse';
 
-// Coloca aquí tu ID de Google Sheets (lo encuentras en la URL de tu hoja de cálculo)
-export const SHEET_ID = '';
+// Hoja principal de la carta. Debe ser visible para cualquier persona con el enlace.
+export const SHEET_ID = '1EBh44zwkiFI8L7xuRGbFpBgSNR-9Ww6wGPzv1-2azRs';
 
 export interface SheetDish {
   categoría: string;
@@ -13,6 +13,7 @@ export interface SheetDish {
 
 export interface SheetCategory {
   nombre: string;
+  'precio por delivery'?: string;
 }
 
 export const fetchSheetData = async <T>(sheetName: string): Promise<T[]> => {
@@ -20,13 +21,25 @@ export const fetchSheetData = async <T>(sheetName: string): Promise<T[]> => {
   
   try {
     const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Google Sheets respondió ${response.status}`);
+    }
     const csvText = await response.text();
+    if (/<!doctype html|<html/i.test(csvText)) {
+      throw new Error('La hoja no está publicada o no permite acceso con el enlace');
+    }
     
     return new Promise((resolve, reject) => {
       Papa.parse(csvText, {
         header: true,
         skipEmptyLines: true,
-        complete: (results) => resolve(results.data as T[]),
+        complete: (results) => {
+          if (results.errors.length > 0) {
+            reject(new Error(results.errors.map(error => error.message).join('; ')));
+            return;
+          }
+          resolve(results.data as T[]);
+        },
         error: (error: any) => reject(error),
       });
     });
@@ -38,7 +51,7 @@ export const fetchSheetData = async <T>(sheetName: string): Promise<T[]> => {
 
 // Configura aquí la URL de tu Google Apps Script Web App para poder enviar datos
 // Instrucciones: Crea un Apps Script, pega el código que te di, impleméntalo como Aplicación Web y pega la URL de ejecución aquí.
-export const WEB_APP_URL = '';
+export const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby8_2w1BztvaGbCMW7mRhLHBm7_y32sYZXVGUkQBjVBXwAV2b4daPmK3DRIjsKD5JgD/exec';
 
 export const submitSheetData = async (sheetName: string, data: any): Promise<boolean> => {
   if (!WEB_APP_URL) {
@@ -51,7 +64,7 @@ export const submitSheetData = async (sheetName: string, data: any): Promise<boo
       method: 'POST',
       mode: 'no-cors', // Importante para evitar problemas de CORS con Apps Script
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'text/plain;charset=utf-8',
       },
       body: JSON.stringify({
         sheetName,
