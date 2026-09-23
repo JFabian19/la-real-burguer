@@ -18,9 +18,10 @@ const MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURICom
 const INSTAGRAM_URL = 'https://www.instagram.com/larealburguer.pe/';
 const FACEBOOK_URL = 'https://www.facebook.com/p/La-Real-burguer-sangucheria-100066460213380/';
 const TIKTOK_URL = 'https://www.tiktok.com/@larealburguer9gmail.com';
-const LOGO_PATH = '/assets/la-real-logo.png';
-const BANNER_PATH = '/assets/la-real-banner.png';
-const BIRTHDAY_PROMO_PATH = '/assets/birthday-promo.png';
+const assetPath = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`;
+const LOGO_PATH = assetPath('assets/la-real-logo.webp');
+const BANNER_PATH = assetPath('assets/la-real-banner.webp');
+const BIRTHDAY_PROMO_PATH = assetPath('assets/birthday-promo.webp');
 const MARQUEE_TEXT = '🔥 HAMBURGUESAS CON SABOR REAL • PEDIDOS RÁPIDOS POR WHATSAPP • RECOJO EN TIENDA O DELIVERY • ';
 
 const TikTokIcon = ({ size = 18 }: { size?: number }) => (
@@ -29,7 +30,7 @@ const TikTokIcon = ({ size = 18 }: { size?: number }) => (
   </svg>
 );
 
-const LOCAL_IMAGES: Record<string, string> = {
+const LOCAL_IMAGE_PATHS: Record<string, string> = {
   'Burger clásica': '/assets/platos/burger-clasica.webp',
   'Cheese Burger': '/assets/platos/cheese-burger.webp',
   'Cheddar Burger': '/assets/platos/cheddar-burger.webp',
@@ -100,7 +101,6 @@ const LOCAL_IMAGES: Record<string, string> = {
   'Jugo de piña': '/assets/platos/jugo-de-pina.webp',
   'Jugo de papaya': '/assets/platos/jugo-de-papaya.webp',
   'Jugo de fresa con papaya': '/assets/platos/jugo-de-fresa-con-papaya.webp',
-  'Leche adicional para jugo': '/assets/platos/leche-adicional-para-jugo.webp',
   'Batido de fresa': '/assets/platos/batido-de-fresa.webp',
   'Banana Berry': '/assets/platos/banana-berry.webp',
   'Papaya Energy': '/assets/platos/papaya-energy.webp',
@@ -184,6 +184,10 @@ const LOCAL_IMAGES: Record<string, string> = {
   '1/2 porción de papas': '/assets/platos/1-2-porcion-de-papas.webp',
   '1 porción de papas familiar': '/assets/platos/1-porcion-de-papas-familiar.webp',
 };
+
+const LOCAL_IMAGES: Record<string, string> = Object.fromEntries(
+  Object.entries(LOCAL_IMAGE_PATHS).map(([dishName, path]) => [dishName, assetPath(path)]),
+);
 
 interface Dish { nombre: string; descripcion?: string; imagen?: string; precio: string; }
 interface AddOnOption { id: string; nombre: string; precio: number; emoji?: string; }
